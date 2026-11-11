@@ -60,14 +60,15 @@
   --lh-body: 1.55;
   --lh-tight: 1.15;
 
-  --s1: 4px;
-  --s2: 6.5px;
-  --s3: 10.5px;
-  --s4: 17px;
-  --s5: 27.5px;
-  --s6: 44.5px;
-  --s7: 72px;
-  --s8: 116.5px;
+  /* phi spacing in rem (4, 6.5, 10.5, 17, 27.5, 44.5, 72, 116.5px at 16px) so space grows with the type on wide screens */
+  --s1: 0.25rem;
+  --s2: 0.40625rem;
+  --s3: 0.65625rem;
+  --s4: 1.0625rem;
+  --s5: 1.71875rem;
+  --s6: 2.78125rem;
+  --s7: 4.5rem;
+  --s8: 7.28125rem;
 
   --r-control: 10px;
   --r-sheet: 17px;
@@ -84,7 +85,9 @@
   --bar-h: 56px;
   --measure: 68ch;
   --ledger-w: 36rem;
-  --rail: 260px;
+  --rail: 16.25rem;
+  /* Desktop root size: 16px at 1024px wide, 18px at 2048px, capped at 19px; every rem (type, space, columns) follows */
+  --root-desktop: clamp(1rem, 0.875rem + 0.1953vw, 1.1875rem);
   --content: 42.5rem;
   --sheet-h: 61.8dvh;
   --reading-line: 38.2vh;
@@ -361,7 +364,8 @@ main:focus {
   outline: none;
 }
 
-.rail {
+.rail,
+.tools {
   display: none;
 }
 
@@ -1265,6 +1269,7 @@ section[data-sid="ten-things"] ol > li::before {
 /* ---------- Desktop: rail + content, rail : content ≈ 1 : φ² ---------- */
 @media (min-width: 1024px) {
   html {
+    font-size: var(--root-desktop);
     scroll-padding-top: var(--s6);
   }
 
@@ -1295,6 +1300,8 @@ section[data-sid="ten-things"] ol > li::before {
     align-self: start;
     height: 100vh;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--rule) transparent;
     padding: var(--s6) 0;
   }
 
@@ -1331,6 +1338,31 @@ section[data-sid="ten-things"] ol > li::before {
 
   .hero {
     padding-top: 0;
+  }
+}
+
+/* ---------- Wide: contents | text | switch + deadline. Two rails of equal width keep the text centred on the screen. ---------- */
+@media (min-width: 1440px) {
+  .shell {
+    grid-template-columns: var(--rail) minmax(0, var(--content)) var(--rail);
+    column-gap: clamp(var(--s6), 4vw, var(--s7));
+  }
+
+  .rail .lang,
+  .rail .deadline {
+    display: none;
+  }
+
+  .tools {
+    display: block;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    padding: var(--s6) 0;
+  }
+
+  .tools .lang {
+    margin-bottom: var(--s6);
   }
 }
 
@@ -2654,6 +2686,10 @@ section[data-sid="ten-things"] ol > li::before {
 </ul>
 </section></article>
   </main>
+  <div class="tools">
+    <div class="lang" role="radiogroup" aria-label="Language" data-i18n-aria="langLabel"><button type="button" role="radio" data-lang="en" aria-checked="true" tabindex="0" lang="en" aria-label="English">EN</button><button type="button" role="radio" data-lang="ro" aria-checked="false" tabindex="-1" lang="ro" aria-label="Română">RO</button></div>
+    <div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">File and pay on ROS by 18 November 2026</p></div>
+  </div>
 </div>
 <dialog class="sheet" aria-label="Contents" data-i18n-aria="contents">
   <div class="sheet-head">
