@@ -526,11 +526,11 @@ section[data-sid="ten-things"] ol {
   counter-reset: rank;
 }
 
+/* Not a grid: grid would turn each bold phrase, link and text run into its own cell and squeeze sentences. */
 section[data-sid="ten-things"] ol > li {
   counter-increment: rank;
-  display: grid;
-  grid-template-columns: 2em minmax(0, 1fr);
-  column-gap: var(--s3);
+  position: relative;
+  padding-left: calc(2em + var(--s3));
 }
 
 section[data-sid="ten-things"] ol > li + li {
@@ -539,9 +539,14 @@ section[data-sid="ten-things"] ol > li + li {
 
 section[data-sid="ten-things"] ol > li::before {
   content: counter(rank);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2em;
   font-weight: 720;
   color: var(--ink-2);
   text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Tables ---------- */
@@ -579,6 +584,15 @@ section[data-sid="ten-things"] ol > li::before {
 .tbl td.num {
   text-align: right;
   white-space: nowrap;
+}
+
+/* Real tables (768px+): no column may starve; the widest table (4 columns) needs ~600px of the 680px column.
+   width, not min-width: browsers ignore min-width on table cells, while an auto-layout cell's width acts as its minimum. */
+@media (min-width: 768px) {
+  .tbl th,
+  .tbl td {
+    width: 10em;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -1333,7 +1347,7 @@ section[data-sid="ten-things"] ol > li::before {
   <aside class="rail">
     <div class="lang" role="radiogroup" aria-label="Language" data-i18n-aria="langLabel"><button type="button" role="radio" data-lang="en" aria-checked="true" tabindex="0" lang="en" aria-label="English">EN</button><button type="button" role="radio" data-lang="ro" aria-checked="false" tabindex="-1" lang="ro" aria-label="Română">RO</button></div>
     <div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">File and pay on ROS by 18 November 2026</p></div>
-    <nav class="toc" data-region="toc" aria-label="Contents" data-i18n-aria="contents"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
+    <nav class="toc" data-region="toc" aria-label="Contents" data-i18n-aria="contents"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
   </aside>
   <main id="main" tabindex="-1">
     <div data-region="hero"><header class="hero"><h1 class="hero-title">Irish Tax for Taxi Drivers</h1><p class="hero-sub">The Plain-English Guide</p><p class="hero-meta">Nov 11, 2026 · @kuku</p><figure class="ledger"><span class="ledger-label">Takings</span><span class="ledger-fig">€<span class="d">6</span><span class="d">2</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Business expenses</span><span class="ledger-fig">−€<span class="d">1</span><span class="d">8</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Capital allowances</span><span class="ledger-fig">−€<span class="d">4</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><div class="ledger-rule" aria-hidden="true"></div><span class="ledger-label ledger-total">Taxable profit</span><span class="ledger-fig ledger-total">€<span class="d">4</span><span class="d">0</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><figcaption class="ledger-line">You pay tax on profit, not takings.</figcaption></figure><div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">File and pay on ROS by 18 November 2026</p></div><p class="lead">As a self-employed taxi driver you pay income tax, USC and PRSI on your <strong>profit</strong>, through one yearly return. The biggest legal savings come from three places: recording every real expense, the special 40% allowance on your taxi, and pension contributions. Your next deadline is Nov 18, 2026 if your 2025 return is not filed yet.</p></header></div>
@@ -1342,7 +1356,7 @@ section[data-sid="ten-things"] ol > li::before {
       <button type="button" data-i18n="dismiss">Got it</button>
     </div>
     <article data-region="article"><section id="ten-things" data-sid="ten-things" aria-labelledby="ten-things-h"><h2 id="ten-things-h" tabindex="-1"><span class="h2-title">The 10 things that matter most</span></h2><ol>
-<li><strong>Next deadline:</strong> the 2025 Form 11, the 2025 balance and 2026 preliminary tax are due by Nov 18, 2026 if you both file and pay on ROS.</li>
+<li><strong>Next deadline:</strong> the 2025 Form 11, the 2025 balance and 2026 preliminary tax are due by Nov 18, 2026 if you both file and pay on ROS.</li>
 <li><strong>You are taxed on profit, not takings.</strong> Every genuine business cost you record cuts your bill by 26% to 47% of its value for most drivers.</li>
 <li><strong>Declare every fare and tip.</strong> Taxi apps and card payment companies already report your income to Revenue.</li>
 <li><strong>Your taxi gets a 40% yearly write-off</strong> of its remaining value, with no cost cap. Ordinary business cars get 12.5% on at most €24,000.</li>
@@ -1356,10 +1370,10 @@ section[data-sid="ten-things"] ol > li::before {
 </section><section id="how-to-use" data-sid="how-to-use" aria-labelledby="how-to-use-h"><h2 id="how-to-use-h" tabindex="-1"><span class="h2-title">How to use this guide</span></h2><ul>
 <li><strong>New to self-employment?</strong> Read Parts 1 to 3 first.</li>
 <li><strong>Want to pay less tax legally?</strong> <a class="xref" href="#part-4">Part 4</a>, the car deep dive, <a class="xref" href="#part-5">Part 5</a> and the pension deep dive.</li>
-<li><strong>Want a routine that makes filing easy?</strong> <a class="xref" href="#part-7">Part 7</a> (workflow), <a class="xref" href="#part-8">Part 8</a> (records) and <a class="xref" href="#part-9">Part 9</a> (Form 11).</li>
+<li><strong>Want a routine that makes filing easy?</strong> <a class="xref" href="#part-7">Part 7</a> (workflow), <a class="xref" href="#part-8">Part 8</a> (records) and <a class="xref" href="#part-9">Part 9</a> (Form 11).</li>
 <li><strong>Worried about Revenue?</strong> Parts 6 and 10.</li>
 </ul>
-</section><section id="part-1" data-sid="part-1" aria-labelledby="part-1-h"><h2 id="part-1-h" tabindex="-1"><span class="kicker">Part 1</span><span class="h2-title">The basics: how a taxi driver is taxed</span></h2><p>As a self-employed taxi driver you pay three charges on your <strong>profit</strong>, not your takings: income tax, USC and PRSI. All three are worked out and paid through one yearly tax return, called <strong>Form 11</strong>.</p>
+</section><section id="part-1" data-sid="part-1" aria-labelledby="part-1-h"><h2 id="part-1-h" tabindex="-1"><span class="kicker">Part 1</span><span class="h2-title">The basics: how a taxi driver is taxed</span></h2><p>As a self-employed taxi driver you pay three charges on your <strong>profit</strong>, not your takings: income tax, USC and PRSI. All three are worked out and paid through one yearly tax return, called <strong>Form 11</strong>.</p>
 <h3 id="part-1-1">The one formula to remember</h3>
 <p><strong>Takings − business expenses − capital allowances = taxable profit</strong></p>
 <ul>
@@ -1554,12 +1568,12 @@ section[data-sid="ten-things"] ol > li::before {
 </section><section id="part-2" data-sid="part-2" aria-labelledby="part-2-h"><h2 id="part-2-h" tabindex="-1"><span class="kicker">Part 2</span><span class="h2-title">Getting set up (do this once)</span></h2><p>You need four things in place: an income tax registration, ROS access, a valid tax clearance certificate, and a separate bank account. Tax clearance matters most to you as a taxi driver: the NTA will not renew your SPSV vehicle licence without it.</p>
 <p>This guide assumes you own or lease your taxi and work for yourself (a sole trader). If a company employs you on a payslip, you are a PAYE worker and most of this guide does not apply.</p>
 <ol>
-<li><strong>Register for income tax self-assessment.</strong> Use the eRegistration service in <a href="https://www.ros.ie/myaccount-web/sign_in.html?execution=e1s1&amp;lang=en" target="_blank" rel="noopener">myAccount</a> and complete Parts A and B of Form TR1. Self-employed people must register. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/guide-to-self-assessment/register-it-self-assessment.aspx" target="_blank" rel="noopener">Revenue: who should register</a>)
+<li><strong>Register for income tax self-assessment.</strong> Use the eRegistration service in <a href="https://www.ros.ie/myaccount-web/sign_in.html?execution=e1s1&amp;lang=en" target="_blank" rel="noopener">myAccount</a> and complete Parts A and B of Form TR1. Self-employed people must register. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/guide-to-self-assessment/register-it-self-assessment.aspx" target="_blank" rel="noopener">Revenue: who should register</a>)
 <ul>
-<li>Exception: if you have a PAYE job and the taxi is a small sideline, you can declare it on a Form 12 in myAccount instead, as long as your taxable non-PAYE income is €5,000 or less and gross non-PAYE income is under €30,000.</li>
+<li>Exception: if you have a PAYE job and the taxi is a small sideline, you can declare it on a Form 12 in myAccount instead, as long as your taxable non-PAYE income is €5,000 or less and gross non-PAYE income is under €30,000.</li>
 </ul>
 </li>
-<li><strong>Get ROS access.</strong> Revenue Online Service (ROS) is where you file Form 11 and pay. Most self-employed people must file online. Filing and paying through ROS also gives you a later deadline each November (<a class="xref" href="#part-3">Part 3</a>).</li>
+<li><strong>Get ROS access.</strong> Revenue Online Service (ROS) is where you file Form 11 and pay. Most self-employed people must file online. Filing and paying through ROS also gives you a later deadline each November (<a class="xref" href="#part-3">Part 3</a>).</li>
 <li><strong>Keep tax clearance live all year.</strong> Apply for eTax Clearance through ROS or myAccount. When you book your SPSV renewal, the NTA checks your tax status with Revenue using your PPSN. (<a href="https://www.nationaltransport.ie/taxi/vehicle-licensing/renewing-an-spsv-licence/" target="_blank" rel="noopener">NTA: renewing an SPSV licence</a>)
 <ul>
 <li>Get it done at least 48 hours before you book your renewal inspection.</li>
@@ -1569,7 +1583,7 @@ section[data-sid="ten-things"] ol > li::before {
 </li>
 <li><strong>Open a separate bank account for the taxi.</strong> Not legally required, but it is the single biggest time-saver. Point your card terminal and app payouts into it, and pay taxi costs from it. Your bank statement then becomes half your bookkeeping.</li>
 <li><strong>Use a calendar-year accounting period (1 January to 31 December).</strong> It matches the tax year and keeps the rules simple.</li>
-<li><strong>Decide: accountant or do-it-yourself.</strong> Many drivers file their own Form 11. If you use an accountant, their fee for preparing your business accounts and return is a deductible expense.</li>
+<li><strong>Decide: accountant or do-it-yourself.</strong> Many drivers file their own Form 11. If you use an accountant, their fee for preparing your business accounts and return is a deductible expense.</li>
 </ol>
 <h3 id="part-2-1">Your first year in business</h3>
 <ul>
@@ -1577,9 +1591,9 @@ section[data-sid="ten-things"] ol > li::before {
 <li>Your first big bill comes the following October, when you pay year one's tax and year two's preliminary tax together. Start setting money aside from day one (<a class="xref" href="#part-7">Part 7</a>).</li>
 <li>Costs you paid in the 3 years before you started (for example the SPSV driver test, Area Knowledge test and licence fees) can normally be claimed as pre-trading expenses in your first year.</li>
 </ul>
-</section><section id="part-3" data-sid="part-3" aria-labelledby="part-3-h"><h2 id="part-3-h" tabindex="-1"><span class="kicker">Part 3</span><span class="h2-title">The tax calendar: one big deadline a year</span></h2><p>Your whole tax year comes down to one date: <strong>31 October</strong>, or a later date in mid-November if you both file and pay on ROS. On that day you do three things at once: file last year's Form 11, pay last year's balance, and pay this year's preliminary tax.</p>
+</section><section id="part-3" data-sid="part-3" aria-labelledby="part-3-h"><h2 id="part-3-h" tabindex="-1"><span class="kicker">Part 3</span><span class="h2-title">The tax calendar: one big deadline a year</span></h2><p>Your whole tax year comes down to one date: <strong>31 October</strong>, or a later date in mid-November if you both file and pay on ROS. On that day you do three things at once: file last year's Form 11, pay last year's balance, and pay this year's preliminary tax.</p>
 <aside class="callout">
-<p><strong>Act now if your 2025 return is not done.</strong> The ROS deadline for the 2025 Form 11, the 2025 balance and 2026 preliminary tax is Nov 18, 2026. It only applies if you both file and pay through ROS; otherwise the deadline was 31 October 2026. A pension contribution paid by that date can still cut your 2025 bill (<a class="xref" href="#pension">Deep dive on pensions</a>). (<a href="https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0342026.aspx" target="_blank" rel="noopener">Revenue eBrief 034/26</a>)</p>
+<p><strong>Act now if your 2025 return is not done.</strong> The ROS deadline for the 2025 Form 11, the 2025 balance and 2026 preliminary tax is Nov 18, 2026. It only applies if you both file and pay through ROS; otherwise the deadline was 31 October 2026. A pension contribution paid by that date can still cut your 2025 bill (<a class="xref" href="#pension">Deep dive on pensions</a>). (<a href="https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0342026.aspx" target="_blank" rel="noopener">Revenue eBrief 034/26</a>)</p>
 </aside>
 <figure class="cycle"><figcaption>The pay-and-file cycle: two deadlines across three tax years</figcaption><ol class="cycle-years"><li class="cycle-year"><p class="cycle-year-name">Year 1</p><p class="cycle-note">You drive, keep records and set money aside.</p><p class="cycle-note">Usually no preliminary tax in your first year.</p></li><li class="cycle-year"><p class="cycle-year-name">Year 2</p><div class="cycle-deadline"><p class="cycle-date"><strong>31 October, year 2</strong> <span>or the ROS date in mid-November</span></p><ul><li>File the Year 1 Form 11</li><li>Pay the Year 1 balance</li><li>Pay Year 2 preliminary tax</li></ul></div></li><li class="cycle-year"><p class="cycle-year-name">Year 3</p><div class="cycle-deadline"><p class="cycle-date"><strong>31 October, year 3</strong> <span>or the ROS date in mid-November</span></p><ul><li>File the Year 2 Form 11</li><li>Pay the Year 2 balance</li><li>Pay Year 3 preliminary tax</li></ul></div></li></ol></figure>
 <p>In your first year in business there is usually no preliminary tax, so the first deadline only settles year one. From then on, every autumn bill covers two years.</p>
@@ -1615,7 +1629,7 @@ section[data-sid="ten-things"] ol > li::before {
 </tr>
 <tr>
 <td data-label="When">31 October (or ROS date in mid-November)</td>
-<td data-label="What you do">File last year's Form 11, pay last year's balance, pay this year's preliminary tax</td>
+<td data-label="What you do">File last year's Form 11, pay last year's balance, pay this year's preliminary tax</td>
 </tr>
 </tbody>
 </table>
@@ -1927,7 +1941,7 @@ section[data-sid="ten-things"] ol > li::before {
 <p>Keep the sale or trade-in invoice; it goes on your return that year.</p>
 <h3 id="car-7">Legal timing tip</h3>
 <p>Because the year you buy gets a full 40%, buying your replacement taxi in <strong>December</strong> rather than January brings a large deduction forward by a whole year. Only do this if you genuinely need the car; never buy just to save tax.</p>
-</section><section id="part-5" data-sid="part-5" aria-labelledby="part-5-h"><h2 id="part-5-h" tabindex="-1"><span class="kicker">Part 5</span><span class="h2-title">Reliefs and credits that cut your bill further</span></h2><p>After expenses, the next biggest savings come from personal credits and reliefs that have nothing to do with the taxi itself. Most drivers miss at least one of these. Every one is claimed on your Form 11 (or in myAccount during the year).</p>
+</section><section id="part-5" data-sid="part-5" aria-labelledby="part-5-h"><h2 id="part-5-h" tabindex="-1"><span class="kicker">Part 5</span><span class="h2-title">Reliefs and credits that cut your bill further</span></h2><p>After expenses, the next biggest savings come from personal credits and reliefs that have nothing to do with the taxi itself. Most drivers miss at least one of these. Every one is claimed on your Form 11 (or in myAccount during the year).</p>
 <h3 id="part-5-1">Credits you get automatically (check they are on your return)</h3>
 <div class="tbl" role="region" tabindex="0" aria-label="Credits you get automatically (check they are on your return)">
 <table>
@@ -2091,7 +2105,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li><strong>At retirement (from 60):</strong> up to 25% of the fund tax-free (lifetime cap €200,000); the rest is taxed as income when you draw it.</li>
 </ul>
 <h3 id="pension-3">The backdating trick (completely legal)</h3>
-<p>A lump sum paid after 31 December, but by the tax return deadline, can be treated as paid in the <strong>previous</strong> year. You make the election on the Form 11.</p>
+<p>A lump sum paid after 31 December, but by the tax return deadline, can be treated as paid in the <strong>previous</strong> year. You make the election on the Form 11.</p>
 <ul>
 <li><strong>Right now:</strong> a contribution paid by Nov 18, 2026 can still reduce your <strong>2025</strong> tax bill, if you file and pay through ROS by that date.</li>
 <li><strong>Every year after:</strong> contribute for year X by 31 October of year X + 1 (or the ROS date in November).</li>
@@ -2138,7 +2152,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li>In September or October, estimate last year's profit from your records.</li>
 <li>Work out the amount that brings your profit down to the 20% band edge, within your age limit.</li>
 <li>Pay it into a PRSA or personal pension before the deadline (a financial adviser or your bank can set one up; compare charges).</li>
-<li>Keep the pension provider's receipt and tick the backdating election on your Form 11.</li>
+<li>Keep the pension provider's receipt and tick the backdating election on your Form 11.</li>
 <li>Consider a small monthly direct debit too, so you are not finding a lump sum every October.</li>
 </ol>
 </section><section id="part-6" data-sid="part-6" aria-labelledby="part-6-h"><h2 id="part-6-h" tabindex="-1"><span class="kicker">Part 6</span><span class="h2-title">Planning, avoidance and evasion: where the lines are</span></h2><p>There are three very different things people call &quot;saving tax&quot;. Only the first is safe. Everything recommended in this guide is tax planning: using reliefs the law deliberately gives you.</p>
@@ -2284,7 +2298,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li class="check"><label><input type="checkbox" data-cid="part-7.24"><span>Check last year's totals against the app and card annual statements</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.25"><span>Work out the capital allowance on the taxi (<a class="xref" href="#car">Deep dive on your car</a>)</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.26"><span>Estimate profit and <strong>decide your backdated pension contribution</strong> (<a class="xref" href="#pension">Deep dive on pensions</a>)</span></label></li>
-<li class="check"><label><input type="checkbox" data-cid="part-7.27"><span>Fill in Form 11 on ROS (<a class="xref" href="#part-9">Part 9</a>) or send your folder to your accountant</span></label></li>
+<li class="check"><label><input type="checkbox" data-cid="part-7.27"><span>Fill in Form 11 on ROS (<a class="xref" href="#part-9">Part 9</a>) or send your folder to your accountant</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.28"><span>Pay last year's balance and this year's preliminary tax from the Tax pot, by the ROS deadline in November</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.29"><span>Save the filed return and payment receipts in <code>Tax return</code></span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.30"><span>Confirm your tax clearance is still valid</span></label></li>
@@ -2371,7 +2385,7 @@ section[data-sid="ten-things"] ol > li::before {
 <td data-label="Where it comes from">Doctors, landlord, college</td>
 </tr>
 <tr>
-<td data-label="Record">Filed Form 11 and payment confirmations</td>
+<td data-label="Record">Filed Form 11 and payment confirmations</td>
 <td data-label="Proves">What you declared and paid</td>
 <td data-label="Where it comes from">ROS</td>
 </tr>
@@ -2386,65 +2400,65 @@ section[data-sid="ten-things"] ol > li::before {
 <li>Paying by card from the taxi account means the bank statement backs up any lost receipt (but a receipt is still the stronger proof).</li>
 </ul>
 <h3 id="part-8-3">A simple folder system</h3>
-<ul class="tree"><li style="--depth:0"><code class="tree-name">Taxi 2026/</code></li><li style="--depth:1"><code class="tree-name">Receipts inbox/</code><span class="tree-note">photos land here during the week</span></li><li style="--depth:1"><code class="tree-name">01 Jan/ ... 12 Dec/</code><span class="tree-note">receipts, app and card statements, bank statement</span></li><li style="--depth:1"><code class="tree-name">Annual statements/</code><span class="tree-note">app annual summaries, interest, insurance, pension</span></li><li style="--depth:1"><code class="tree-name">Car/</code><span class="tree-note">purchase or HP agreement, grant letters, odometer photos</span></li><li style="--depth:1"><code class="tree-name">Tax return/</code><span class="tree-note">Form 11 copy, payment receipts, tax clearance</span></li><li style="--depth:1"><code class="tree-name">Summary.xlsx</code><span class="tree-note">one line per month: takings and expenses by category</span></li></ul>
+<ul class="tree"><li style="--depth:0"><code class="tree-name">Taxi 2026/</code></li><li style="--depth:1"><code class="tree-name">Receipts inbox/</code><span class="tree-note">photos land here during the week</span></li><li style="--depth:1"><code class="tree-name">01 Jan/ ... 12 Dec/</code><span class="tree-note">receipts, app and card statements, bank statement</span></li><li style="--depth:1"><code class="tree-name">Annual statements/</code><span class="tree-note">app annual summaries, interest, insurance, pension</span></li><li style="--depth:1"><code class="tree-name">Car/</code><span class="tree-note">purchase or HP agreement, grant letters, odometer photos</span></li><li style="--depth:1"><code class="tree-name">Tax return/</code><span class="tree-note">Form 11 copy, payment receipts, tax clearance</span></li><li style="--depth:1"><code class="tree-name">Summary.xlsx</code><span class="tree-note">one line per month: takings and expenses by category</span></li></ul>
 <p>Name files with the date first (<code>2026-03-14 Fuel 62.50.jpg</code>) so they sort themselves.</p>
 <h3 id="part-8-4">When to keep records longer than six years</h3>
 <ul>
 <li>Car purchase and sale documents: keep them for six years <strong>after the year you sell the car</strong>, because they support every year's capital allowance.</li>
 <li>Anything relating to a year under Revenue review or appeal: keep until it is closed.</li>
 </ul>
-</section><section id="part-9" data-sid="part-9" aria-labelledby="part-9-h"><h2 id="part-9-h" tabindex="-1"><span class="kicker">Part 9</span><span class="h2-title">Filing Form 11 step by step</span></h2><p>If your monthly summary uses the categories below, filling in Form 11 is mostly copying 12-month totals into the right boxes. ROS does the tax calculation for you.</p>
-<h3 id="part-9-1">Your expense categories, matched to the Form 11 boxes</h3>
+</section><section id="part-9" data-sid="part-9" aria-labelledby="part-9-h"><h2 id="part-9-h" tabindex="-1"><span class="kicker">Part 9</span><span class="h2-title">Filing Form 11 step by step</span></h2><p>If your monthly summary uses the categories below, filling in Form 11 is mostly copying 12-month totals into the right boxes. ROS does the tax calculation for you.</p>
+<h3 id="part-9-1">Your expense categories, matched to the Form 11 boxes</h3>
 <p>Use these categories in your monthly summary all year:</p>
-<div class="tbl" role="region" tabindex="0" aria-label="Your expense categories, matched to the Form 11 boxes">
+<div class="tbl" role="region" tabindex="0" aria-label="Your expense categories, matched to the Form 11 boxes">
 <table>
 <thead>
 <tr>
 <th>Your category</th>
 <th>What goes in it</th>
-<th>Form 11 box (Extracts from Accounts)</th>
+<th>Form 11 box (Extracts from Accounts)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td data-label="Your category">Takings</td>
 <td data-label="What goes in it">Cash fares, card fares, app fares before commission, all tips</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Sales / Receipts / Turnover</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Sales / Receipts / Turnover</td>
 </tr>
 <tr>
 <td data-label="Your category">Motor</td>
 <td data-label="What goes in it">Fuel or charging, insurance, servicing, repairs, tyres, NCT, motor tax, tolls, parking, valeting</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Motor, Travel and Subsistence</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Motor, Travel and Subsistence</td>
 </tr>
 <tr>
 <td data-label="Your category">Accountant</td>
 <td data-label="What goes in it">Accountant and bookkeeping fees</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Consultancy and Professional Fees</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Consultancy and Professional Fees</td>
 </tr>
 <tr>
 <td data-label="Your category">Wages</td>
 <td data-label="What goes in it">A genuine wage paid to a spouse or helper through payroll</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Salaries / Wages</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Salaries / Wages</td>
 </tr>
 <tr>
 <td data-label="Your category">Equipment repairs</td>
 <td data-label="What goes in it">Repairs to the meter, roof sign or card terminal</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Repairs / Renewals</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Repairs / Renewals</td>
 </tr>
 <tr>
 <td data-label="Your category">Other</td>
 <td data-label="What goes in it">SPSV licence fees, app and dispatch fees, card fees, phone, bank charges, loan or HP interest, lease payments, memberships, supplies</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Other Expenses</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Other Expenses</td>
 </tr>
 <tr>
 <td data-label="Your category">Private use add-back</td>
 <td data-label="What goes in it">The private share of motor and phone costs</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Adjustments: Motor Expenses private element; Light, Heat and Phone private element</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Adjustments: Motor Expenses private element; Light, Heat and Phone private element</td>
 </tr>
 <tr>
 <td data-label="Your category">Capital allowances</td>
 <td data-label="What goes in it">40% on the taxi; 12.5% on sign, meter and other equipment, business share only</td>
-<td data-label="Form 11 box (Extracts from Accounts)">Capital allowances section of the self-employed panel (not as an expense)</td>
+<td data-label="Form 11 box (Extracts from Accounts)">Capital allowances section of the self-employed panel (not as an expense)</td>
 </tr>
 </tbody>
 </table>
@@ -2453,7 +2467,7 @@ section[data-sid="ten-things"] ol > li::before {
 <h3 id="part-9-2">The filing steps</h3>
 <ol>
 <li><strong>Gather your numbers.</strong> Year totals for each category, business-use %, capital allowance working, pension certificate, medical and rent receipts.</li>
-<li><strong>Sign in to ROS</strong> and open the pre-filled Form 11 for the year. Check your ROS certificate has not expired well before the deadline. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/key-steps-in-filing-your-tax-return.aspx" target="_blank" rel="noopener">Revenue: key steps</a>)</li>
+<li><strong>Sign in to ROS</strong> and open the pre-filled Form 11 for the year. Check your ROS certificate has not expired well before the deadline. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/key-steps-in-filing-your-tax-return.aspx" target="_blank" rel="noopener">Revenue: key steps</a>)</li>
 <li><strong>Self-employed income panel.</strong> Describe the trade as &quot;taxi operator&quot;, give the accounting period (1 January to 31 December) and enter the Extracts from Accounts using the table above.</li>
 <li><strong>Adjustments.</strong> Add back the private share of motor and phone costs.</li>
 <li><strong>Capital allowances.</strong> Enter the wear and tear allowance on the taxi and equipment; enter any balancing allowance or charge if you sold a car.</li>
@@ -2571,7 +2585,7 @@ section[data-sid="ten-things"] ol > li::before {
 <td data-label="Meaning">Revenue's confirmation that your tax affairs are in order; needed for SPSV renewal</td>
 </tr>
 <tr>
-<td data-label="Term">Form 11</td>
+<td data-label="Term">Form 11</td>
 <td data-label="Meaning">The yearly income tax return for self-employed people</td>
 </tr>
 <tr>
@@ -2628,7 +2642,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li><a href="https://revenue.ie/en/self-assessment-and-self-employment/guide-to-self-assessment/preliminary-tax.aspx" target="_blank" rel="noopener">Revenue: preliminary tax</a></li>
 <li><a href="https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0342026.aspx" target="_blank" rel="noopener">Revenue eBrief 034/26: 2026 ROS Pay and File date</a></li>
 <li><a href="https://revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/index.aspx" target="_blank" rel="noopener">Revenue: filing your tax return</a> and <a href="https://www.revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/key-steps-in-filing-your-tax-return.aspx" target="_blank" rel="noopener">key steps</a></li>
-<li><a href="https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-38/38-01-04j.pdf" target="_blank" rel="noopener">Revenue TDM 38-01-04J: Form 11 Extracts from Accounts</a></li>
+<li><a href="https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-38/38-01-04j.pdf" target="_blank" rel="noopener">Revenue TDM 38-01-04J: Form 11 Extracts from Accounts</a></li>
 <li><a href="https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-47/47-06-08.pdf" target="_blank" rel="noopener">Revenue TDM 47-06-08: late filing surcharge</a></li>
 <li><a href="https://www.revenue.ie/en/self-assessment-and-self-employment/making-a-disclosure/qualifying-disclosure.aspx" target="_blank" rel="noopener">Revenue: qualifying disclosures</a></li>
 <li><a href="https://www.revenue.ie/en/starting-a-business/starting-a-business/keeping-records.aspx" target="_blank" rel="noopener">Revenue: keeping records</a></li>
@@ -2646,11 +2660,11 @@ section[data-sid="ten-things"] ol > li::before {
     <p class="sheet-title" data-i18n="contents">Contents</p>
     <button class="sheet-close" type="button" aria-label="Close" data-i18n-aria="close">×</button>
   </div>
-  <nav class="toc" data-region="toc"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
+  <nav class="toc" data-region="toc"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
 </dialog>
 <template id="lang-en"></template>
-<template id="lang-ro"><div data-part="hero"><header class="hero"><h1 class="hero-title">Taxele în Irlanda pentru taximetriști</h1><p class="hero-sub">Ghid pe înțelesul tuturor</p><p class="hero-meta">11 noiembrie 2026 · @kuku</p><figure class="ledger"><span class="ledger-label">Încasări</span><span class="ledger-fig">€<span class="d">6</span><span class="d">2</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Cheltuieli de afaceri</span><span class="ledger-fig">−€<span class="d">1</span><span class="d">8</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Amortizare fiscală</span><span class="ledger-fig">−€<span class="d">4</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><div class="ledger-rule" aria-hidden="true"></div><span class="ledger-label ledger-total">Profit impozabil</span><span class="ledger-fig ledger-total">€<span class="d">4</span><span class="d">0</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><figcaption class="ledger-line">Plătești impozit pe profit, nu pe încasări.</figcaption></figure><div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">Depui și plătești pe ROS până pe 18 noiembrie 2026</p></div><p class="lead">Ca taximetrist care lucrează pe cont propriu, plătești impozit pe venit, USC și PRSI pe <strong>profit</strong>, printr-o singură declarație anuală. Cele mai mari economii legale vin din trei surse: înregistrarea fiecărei cheltuieli reale, amortizarea specială de 40% pentru taxi și contribuțiile la pensie. Următorul tău termen este 18 noiembrie 2026, dacă declarația pentru 2025 nu este încă depusă.</p><p class="note">Aceasta este o traducere a ghidului în limba engleză. Dacă textele diferă, versiunea în engleză este cea valabilă.</p></header></div><nav data-part="toc"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">Cele 10 lucruri care contează cel mai mult</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">Cum să folosești acest ghid</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Partea 1</span><span class="toc-title">Bazele</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Partea 2</span><span class="toc-title">Primii pași (o singură dată)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Partea 3</span><span class="toc-title">Calendarul fiscal</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Partea 4</span><span class="toc-title">Toate cheltuielile pe care le poți deduce</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Pe larg</span><span class="toc-title">Mașina ta</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Partea 5</span><span class="toc-title">Facilități și credite fiscale care îți reduc și mai mult factura</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Pe larg</span><span class="toc-title">Contribuțiile la pensie</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Partea 6</span><span class="toc-title">Planificare, evitare și evaziune</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Partea 7</span><span class="toc-title">Rutina ta</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Partea 8</span><span class="toc-title">Documente</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Partea 9</span><span class="toc-title">Depunerea Form 11 pas cu pas</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Partea 10</span><span class="toc-title">Dacă ceva nu merge bine</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glosar și surse</span></a></li></ol></nav><div data-part="article"><section id="ten-things" data-sid="ten-things" aria-labelledby="ten-things-h"><h2 id="ten-things-h" tabindex="-1"><span class="h2-title">Cele 10 lucruri care contează cel mai mult</span></h2><ol>
-<li><strong>Următorul termen:</strong> Form 11 pentru 2025, soldul pentru 2025 și impozitul preliminar (preliminary tax) pentru 2026 sunt scadente până la 18 noiembrie 2026, dacă atât depui, cât și plătești pe ROS.</li>
+<template id="lang-ro"><div data-part="hero"><header class="hero"><h1 class="hero-title">Taxele în Irlanda pentru taximetriști</h1><p class="hero-sub">Ghid pe înțelesul tuturor</p><p class="hero-meta">11 noiembrie 2026 · @kuku</p><figure class="ledger"><span class="ledger-label">Încasări</span><span class="ledger-fig">€<span class="d">6</span><span class="d">2</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Cheltuieli de afaceri</span><span class="ledger-fig">−€<span class="d">1</span><span class="d">8</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Amortizare fiscală</span><span class="ledger-fig">−€<span class="d">4</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><div class="ledger-rule" aria-hidden="true"></div><span class="ledger-label ledger-total">Profit impozabil</span><span class="ledger-fig ledger-total">€<span class="d">4</span><span class="d">0</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><figcaption class="ledger-line">Plătești impozit pe profit, nu pe încasări.</figcaption></figure><div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">Depui și plătești pe ROS până pe 18 noiembrie 2026</p></div><p class="lead">Ca taximetrist care lucrează pe cont propriu, plătești impozit pe venit, USC și PRSI pe <strong>profit</strong>, printr-o singură declarație anuală. Cele mai mari economii legale vin din trei surse: înregistrarea fiecărei cheltuieli reale, amortizarea specială de 40% pentru taxi și contribuțiile la pensie. Următorul tău termen este 18 noiembrie 2026, dacă declarația pentru 2025 nu este încă depusă.</p><p class="note">Aceasta este o traducere a ghidului în limba engleză. Dacă textele diferă, versiunea în engleză este cea valabilă.</p></header></div><nav data-part="toc"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">Cele 10 lucruri care contează cel mai mult</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">Cum să folosești acest ghid</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Partea 1</span><span class="toc-title">Bazele</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Partea 2</span><span class="toc-title">Primii pași (o singură dată)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Partea 3</span><span class="toc-title">Calendarul fiscal</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Partea 4</span><span class="toc-title">Toate cheltuielile pe care le poți deduce</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Pe larg</span><span class="toc-title">Mașina ta</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Partea 5</span><span class="toc-title">Facilități și credite fiscale care îți reduc și mai mult factura</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Pe larg</span><span class="toc-title">Contribuțiile la pensie</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Partea 6</span><span class="toc-title">Planificare, evitare și evaziune</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Partea 7</span><span class="toc-title">Rutina ta</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Partea 8</span><span class="toc-title">Documente</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Partea 9</span><span class="toc-title">Depunerea Form 11 pas cu pas</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Partea 10</span><span class="toc-title">Dacă ceva nu merge bine</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glosar și surse</span></a></li></ol></nav><div data-part="article"><section id="ten-things" data-sid="ten-things" aria-labelledby="ten-things-h"><h2 id="ten-things-h" tabindex="-1"><span class="h2-title">Cele 10 lucruri care contează cel mai mult</span></h2><ol>
+<li><strong>Următorul termen:</strong> Form 11 pentru 2025, soldul pentru 2025 și impozitul preliminar (preliminary tax) pentru 2026 sunt scadente până la 18 noiembrie 2026, dacă atât depui, cât și plătești pe ROS.</li>
 <li><strong>Ești impozitat pe profit, nu pe încasări.</strong> Fiecare cheltuială reală de afaceri pe care o înregistrezi îți reduce factura cu 26% până la 47% din valoarea ei, pentru majoritatea șoferilor.</li>
 <li><strong>Declară fiecare cursă și fiecare bacșiș.</strong> Aplicațiile de taxi și companiile de plăți cu cardul îți raportează deja veniturile către Revenue.</li>
 <li><strong>Taxiul tău beneficiază de o amortizare anuală de 40%</strong> din valoarea rămasă, fără plafon de cost. Mașinile obișnuite folosite în afaceri primesc 12.5% pe cel mult €24,000.</li>
@@ -2664,10 +2678,10 @@ section[data-sid="ten-things"] ol > li::before {
 </section><section id="how-to-use" data-sid="how-to-use" aria-labelledby="how-to-use-h"><h2 id="how-to-use-h" tabindex="-1"><span class="h2-title">Cum să folosești acest ghid</span></h2><ul>
 <li><strong>Nou în activitatea pe cont propriu?</strong> Citește mai întâi Părțile 1–3.</li>
 <li><strong>Vrei să plătești legal mai puțin impozit?</strong> <a class="xref" href="#part-4">Partea 4</a>, analiza despre mașină, <a class="xref" href="#part-5">Partea 5</a> și analiza despre pensie.</li>
-<li><strong>Vrei o rutină care face depunerea ușoară?</strong> <a class="xref" href="#part-7">Partea 7</a> (rutina de lucru), <a class="xref" href="#part-8">Partea 8</a> (documentele) și <a class="xref" href="#part-9">Partea 9</a> (Form 11).</li>
+<li><strong>Vrei o rutină care face depunerea ușoară?</strong> <a class="xref" href="#part-7">Partea 7</a> (rutina de lucru), <a class="xref" href="#part-8">Partea 8</a> (documentele) și <a class="xref" href="#part-9">Partea 9</a> (Form 11).</li>
 <li><strong>Îți faci griji din cauza Revenue?</strong> Părțile 6 și 10.</li>
 </ul>
-</section><section id="part-1" data-sid="part-1" aria-labelledby="part-1-h"><h2 id="part-1-h" tabindex="-1"><span class="kicker">Partea 1</span><span class="h2-title">Bazele: cum este impozitat un taximetrist</span></h2><p>Ca taximetrist pe cont propriu plătești trei taxe pe <strong>profit</strong>, nu pe încasări: impozit pe venit, USC și PRSI. Toate trei sunt calculate și plătite printr-o singură declarație anuală, numită <strong>Form 11</strong>.</p>
+</section><section id="part-1" data-sid="part-1" aria-labelledby="part-1-h"><h2 id="part-1-h" tabindex="-1"><span class="kicker">Partea 1</span><span class="h2-title">Bazele: cum este impozitat un taximetrist</span></h2><p>Ca taximetrist pe cont propriu plătești trei taxe pe <strong>profit</strong>, nu pe încasări: impozit pe venit, USC și PRSI. Toate trei sunt calculate și plătite printr-o singură declarație anuală, numită <strong>Form 11</strong>.</p>
 <h3 id="part-1-1">Singura formulă de reținut</h3>
 <p><strong>Încasări − cheltuieli de afaceri − amortizare fiscală = profit impozabil</strong></p>
 <ul>
@@ -2862,12 +2876,12 @@ section[data-sid="ten-things"] ol > li::before {
 </section><section id="part-2" data-sid="part-2" aria-labelledby="part-2-h"><h2 id="part-2-h" tabindex="-1"><span class="kicker">Partea 2</span><span class="h2-title">Primii pași (o singură dată)</span></h2><p>Ai nevoie de patru lucruri puse la punct: înregistrarea pentru impozitul pe venit, acces la ROS, un certificat de conformitate fiscală (tax clearance) valabil și un cont bancar separat. Pentru tine, ca taximetrist, certificatul de conformitate fiscală contează cel mai mult: NTA nu îți reînnoiește licența SPSV a vehiculului fără el.</p>
 <p>Acest ghid presupune că deții taxiul sau îl ai în leasing și lucrezi pentru tine (comerciant individual, „sole trader”). Dacă ești angajatul unei companii și primești fluturaș de salariu, ești lucrător PAYE și cea mai mare parte a acestui ghid nu ți se aplică.</p>
 <ol>
-<li><strong>Înregistrează-te pentru autoevaluarea impozitului pe venit (self-assessment).</strong> Folosește serviciul eRegistration din <a href="https://www.ros.ie/myaccount-web/sign_in.html?execution=e1s1&amp;lang=en" target="_blank" rel="noopener">myAccount</a> și completează Părțile A și B din Form TR1. Persoanele care lucrează pe cont propriu trebuie să se înregistreze. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/guide-to-self-assessment/register-it-self-assessment.aspx" target="_blank" rel="noopener">Revenue: cine trebuie să se înregistreze</a>)
+<li><strong>Înregistrează-te pentru autoevaluarea impozitului pe venit (self-assessment).</strong> Folosește serviciul eRegistration din <a href="https://www.ros.ie/myaccount-web/sign_in.html?execution=e1s1&amp;lang=en" target="_blank" rel="noopener">myAccount</a> și completează Părțile A și B din Form TR1. Persoanele care lucrează pe cont propriu trebuie să se înregistreze. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/guide-to-self-assessment/register-it-self-assessment.aspx" target="_blank" rel="noopener">Revenue: cine trebuie să se înregistreze</a>)
 <ul>
-<li>Excepție: dacă ai un loc de muncă PAYE și taxiul este o mică activitate secundară, îl poți declara în schimb pe un Form 12 în myAccount, cu condiția ca venitul tău impozabil non-PAYE să fie de €5,000 sau mai puțin, iar venitul brut non-PAYE să fie sub €30,000.</li>
+<li>Excepție: dacă ai un loc de muncă PAYE și taxiul este o mică activitate secundară, îl poți declara în schimb pe un Form 12 în myAccount, cu condiția ca venitul tău impozabil non-PAYE să fie de €5,000 sau mai puțin, iar venitul brut non-PAYE să fie sub €30,000.</li>
 </ul>
 </li>
-<li><strong>Obține acces la ROS.</strong> Revenue Online Service (ROS) este locul unde depui Form 11 și plătești. Majoritatea persoanelor care lucrează pe cont propriu trebuie să depună online. Depunerea și plata prin ROS îți dau și un termen mai târziu, în fiecare noiembrie (<a class="xref" href="#part-3">Partea 3</a>).</li>
+<li><strong>Obține acces la ROS.</strong> Revenue Online Service (ROS) este locul unde depui Form 11 și plătești. Majoritatea persoanelor care lucrează pe cont propriu trebuie să depună online. Depunerea și plata prin ROS îți dau și un termen mai târziu, în fiecare noiembrie (<a class="xref" href="#part-3">Partea 3</a>).</li>
 <li><strong>Păstrează certificatul de conformitate fiscală valabil tot anul.</strong> Solicită eTax Clearance prin ROS sau myAccount. Când programezi reînnoirea SPSV, NTA îți verifică situația fiscală la Revenue folosind PPSN-ul tău. (<a href="https://www.nationaltransport.ie/taxi/vehicle-licensing/renewing-an-spsv-licence/" target="_blank" rel="noopener">NTA: reînnoirea unei licențe SPSV</a>)
 <ul>
 <li>Fă-o cu cel puțin 48 de ore înainte să programezi inspecția de reînnoire.</li>
@@ -2877,7 +2891,7 @@ section[data-sid="ten-things"] ol > li::before {
 </li>
 <li><strong>Deschide un cont bancar separat pentru taxi.</strong> Nu este obligatoriu prin lege, dar este cel mai mare câștig de timp. Direcționează în el plățile de la terminalul de card și de la aplicații și plătește din el costurile taxiului. Extrasul de cont devine astfel jumătate din contabilitatea ta.</li>
 <li><strong>Folosește ca perioadă contabilă anul calendaristic (1 ianuarie – 31 decembrie).</strong> Se potrivește cu anul fiscal și păstrează regulile simple.</li>
-<li><strong>Decide: contabil sau pe cont propriu.</strong> Mulți șoferi își depun singuri Form 11. Dacă apelezi la un contabil, onorariul lui pentru întocmirea situațiilor contabile ale afacerii și a declarației este o cheltuială deductibilă.</li>
+<li><strong>Decide: contabil sau pe cont propriu.</strong> Mulți șoferi își depun singuri Form 11. Dacă apelezi la un contabil, onorariul lui pentru întocmirea situațiilor contabile ale afacerii și a declarației este o cheltuială deductibilă.</li>
 </ol>
 <h3 id="part-2-1">Primul tău an de activitate</h3>
 <ul>
@@ -2885,9 +2899,9 @@ section[data-sid="ten-things"] ol > li::before {
 <li>Prima factură mare vine în octombrie anul următor, când plătești împreună impozitul pentru anul unu și impozitul preliminar pentru anul doi. Începe să pui bani deoparte din prima zi (<a class="xref" href="#part-7">Partea 7</a>).</li>
 <li>Costurile plătite în cei 3 ani dinainte de începerea activității (de exemplu testul de intrare SPSV, testul Area Knowledge și taxele pentru licențe) pot fi de regulă deduse în primul an, ca cheltuieli dinaintea începerii activității (pre-trading expenses).</li>
 </ul>
-</section><section id="part-3" data-sid="part-3" aria-labelledby="part-3-h"><h2 id="part-3-h" tabindex="-1"><span class="kicker">Partea 3</span><span class="h2-title">Calendarul fiscal: un singur termen mare pe an</span></h2><p>Întregul tău an fiscal se rezumă la o singură dată: <strong>31 octombrie</strong>, sau o dată mai târzie, la jumătatea lui noiembrie, dacă atât depui, cât și plătești pe ROS. În acea zi faci trei lucruri deodată: depui Form 11 pentru anul trecut, plătești soldul pentru anul trecut și plătești impozitul preliminar pentru anul în curs.</p>
+</section><section id="part-3" data-sid="part-3" aria-labelledby="part-3-h"><h2 id="part-3-h" tabindex="-1"><span class="kicker">Partea 3</span><span class="h2-title">Calendarul fiscal: un singur termen mare pe an</span></h2><p>Întregul tău an fiscal se rezumă la o singură dată: <strong>31 octombrie</strong>, sau o dată mai târzie, la jumătatea lui noiembrie, dacă atât depui, cât și plătești pe ROS. În acea zi faci trei lucruri deodată: depui Form 11 pentru anul trecut, plătești soldul pentru anul trecut și plătești impozitul preliminar pentru anul în curs.</p>
 <aside class="callout">
-<p><strong>Acționează acum dacă declarația pentru 2025 nu este gata.</strong> Termenul ROS pentru Form 11 pe 2025, soldul pe 2025 și impozitul preliminar pe 2026 este 18 noiembrie 2026. Se aplică doar dacă atât depui, cât și plătești prin ROS; altfel, termenul a fost 31 octombrie 2026. O contribuție la pensie plătită până la acea dată îți poate reduce încă factura pentru 2025 (<a class="xref" href="#pension">Pe larg: pensia</a>). (<a href="https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0342026.aspx" target="_blank" rel="noopener">Revenue eBrief 034/26</a>)</p>
+<p><strong>Acționează acum dacă declarația pentru 2025 nu este gata.</strong> Termenul ROS pentru Form 11 pe 2025, soldul pe 2025 și impozitul preliminar pe 2026 este 18 noiembrie 2026. Se aplică doar dacă atât depui, cât și plătești prin ROS; altfel, termenul a fost 31 octombrie 2026. O contribuție la pensie plătită până la acea dată îți poate reduce încă factura pentru 2025 (<a class="xref" href="#pension">Pe larg: pensia</a>). (<a href="https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0342026.aspx" target="_blank" rel="noopener">Revenue eBrief 034/26</a>)</p>
 </aside>
 <figure class="cycle"><figcaption>Ciclul de depunere și plată: două termene în trei ani fiscali</figcaption><ol class="cycle-years"><li class="cycle-year"><p class="cycle-year-name">Anul 1</p><p class="cycle-note">Lucrezi, ții evidența și pui bani deoparte.</p><p class="cycle-note">De obicei, în primul an nu plătești impozit preliminar.</p></li><li class="cycle-year"><p class="cycle-year-name">Anul 2</p><div class="cycle-deadline"><p class="cycle-date"><strong>31 octombrie, anul 2</strong> <span>sau data ROS de la jumătatea lui noiembrie</span></p><ul><li>Depui Form 11 pentru anul 1</li><li>Plătești soldul pentru anul 1</li><li>Plătești impozitul preliminar pentru anul 2</li></ul></div></li><li class="cycle-year"><p class="cycle-year-name">Anul 3</p><div class="cycle-deadline"><p class="cycle-date"><strong>31 octombrie, anul 3</strong> <span>sau data ROS de la jumătatea lui noiembrie</span></p><ul><li>Depui Form 11 pentru anul 2</li><li>Plătești soldul pentru anul 2</li><li>Plătești impozitul preliminar pentru anul 3</li></ul></div></li></ol></figure>
 <p>În primul an de activitate de obicei nu există impozit preliminar, așa că primul termen închide doar anul unu. De atunci încolo, fiecare factură de toamnă acoperă doi ani.</p>
@@ -2923,7 +2937,7 @@ section[data-sid="ten-things"] ol > li::before {
 </tr>
 <tr>
 <td data-label="Când">31 octombrie (sau data ROS de la jumătatea lui noiembrie)</td>
-<td data-label="Ce faci">Depui Form 11 pentru anul trecut, plătești soldul pentru anul trecut și impozitul preliminar pentru anul acesta</td>
+<td data-label="Ce faci">Depui Form 11 pentru anul trecut, plătești soldul pentru anul trecut și impozitul preliminar pentru anul acesta</td>
 </tr>
 </tbody>
 </table>
@@ -3235,7 +3249,7 @@ section[data-sid="ten-things"] ol > li::before {
 <p>Păstrează factura de vânzare sau de schimb; ea intră în declarația ta din acel an.</p>
 <h3 id="car-7">Un sfat legal privind momentul</h3>
 <p>Pentru că în anul cumpărării beneficiezi de întreaga amortizare de 40%, dacă îți cumperi taxiul de înlocuire în <strong>decembrie</strong> în loc de ianuarie, aduci o deducere mare cu un an întreg mai devreme. Fă asta doar dacă ai cu adevărat nevoie de mașină; nu cumpăra niciodată doar ca să economisești impozit.</p>
-</section><section id="part-5" data-sid="part-5" aria-labelledby="part-5-h"><h2 id="part-5-h" tabindex="-1"><span class="kicker">Partea 5</span><span class="h2-title">Facilități și credite fiscale care îți reduc și mai mult factura</span></h2><p>După cheltuieli, cele mai mari economii vin din creditele și facilitățile fiscale personale, care nu au nicio legătură cu taxiul în sine. Majoritatea șoferilor ratează cel puțin una dintre ele. Fiecare se cere în Form 11 (sau în myAccount, în timpul anului).</p>
+</section><section id="part-5" data-sid="part-5" aria-labelledby="part-5-h"><h2 id="part-5-h" tabindex="-1"><span class="kicker">Partea 5</span><span class="h2-title">Facilități și credite fiscale care îți reduc și mai mult factura</span></h2><p>După cheltuieli, cele mai mari economii vin din creditele și facilitățile fiscale personale, care nu au nicio legătură cu taxiul în sine. Majoritatea șoferilor ratează cel puțin una dintre ele. Fiecare se cere în Form 11 (sau în myAccount, în timpul anului).</p>
 <h3 id="part-5-1">Credite pe care le primești automat (verifică dacă apar în declarație)</h3>
 <div class="tbl" role="region" tabindex="0" aria-label="Credite pe care le primești automat (verifică dacă apar în declarație)">
 <table>
@@ -3399,7 +3413,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li><strong>La pensionare (de la 60 de ani):</strong> până la 25% din fond neimpozabil (plafon pe viață de €200,000); restul este impozitat ca venit când îl retragi.</li>
 </ul>
 <h3 id="pension-3">Trucul atribuirii retroactive (complet legal)</h3>
-<p>O sumă plătită după 31 decembrie, dar până la termenul declarației, poate fi tratată ca plătită în anul <strong>anterior</strong>. Alegerea o faci în Form 11.</p>
+<p>O sumă plătită după 31 decembrie, dar până la termenul declarației, poate fi tratată ca plătită în anul <strong>anterior</strong>. Alegerea o faci în Form 11.</p>
 <ul>
 <li><strong>Chiar acum:</strong> o contribuție plătită până la 18 noiembrie 2026 îți poate reduce încă factura pentru <strong>2025</strong>, dacă depui și plătești prin ROS până la acea dată.</li>
 <li><strong>În fiecare an după aceea:</strong> contribui pentru anul X până la 31 octombrie al anului X + 1 (sau data ROS din noiembrie).</li>
@@ -3446,7 +3460,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li>În septembrie sau octombrie, estimează profitul de anul trecut din documentele tale.</li>
 <li>Calculează suma care îți aduce profitul la limita tranșei de 20%, fără să depășești plafonul pentru vârsta ta.</li>
 <li>Plătește-o într-un PRSA sau într-o pensie personală înainte de termen (un consultant financiar sau banca ta îți pot deschide una; compară comisioanele).</li>
-<li>Păstrează chitanța de la furnizorul de pensie și bifează în Form 11 opțiunea de atribuire retroactivă.</li>
+<li>Păstrează chitanța de la furnizorul de pensie și bifează în Form 11 opțiunea de atribuire retroactivă.</li>
 <li>Gândește-te și la un debit direct lunar mic, ca să nu cauți o sumă mare în fiecare octombrie.</li>
 </ol>
 </section><section id="part-6" data-sid="part-6" aria-labelledby="part-6-h"><h2 id="part-6-h" tabindex="-1"><span class="kicker">Partea 6</span><span class="h2-title">Planificare, evitare și evaziune: unde sunt limitele</span></h2><p>Există trei lucruri foarte diferite pe care oamenii le numesc „economie de impozit”. Doar primul este sigur. Tot ce recomandă acest ghid este planificare fiscală: folosirea facilităților fiscale pe care legea ți le oferă în mod intenționat.</p>
@@ -3592,7 +3606,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li class="check"><label><input type="checkbox" data-cid="part-7.24"><span>Compară totalurile de anul trecut cu situațiile anuale din aplicații și de la furnizorul plăților cu cardul</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.25"><span>Calculează amortizarea fiscală pentru taxi (<a class="xref" href="#car">Pe larg: mașina</a>)</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.26"><span>Estimează profitul și <strong>decide contribuția la pensie atribuită retroactiv</strong> (<a class="xref" href="#pension">Pe larg: pensia</a>)</span></label></li>
-<li class="check"><label><input type="checkbox" data-cid="part-7.27"><span>Completează Form 11 pe ROS (<a class="xref" href="#part-9">Partea 9</a>) sau trimite dosarul contabilului</span></label></li>
+<li class="check"><label><input type="checkbox" data-cid="part-7.27"><span>Completează Form 11 pe ROS (<a class="xref" href="#part-9">Partea 9</a>) sau trimite dosarul contabilului</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.28"><span>Plătește soldul de anul trecut și impozitul preliminar pentru anul acesta din „Tax pot”, până la termenul ROS din noiembrie</span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.29"><span>Salvează declarația depusă și chitanțele de plată în <code>Declarația fiscală</code></span></label></li>
 <li class="check"><label><input type="checkbox" data-cid="part-7.30"><span>Confirmă că certificatul de conformitate fiscală (tax clearance) este în continuare valabil</span></label></li>
@@ -3679,7 +3693,7 @@ section[data-sid="ten-things"] ol > li::before {
 <td data-label="De unde vine">Medici, proprietar, facultate</td>
 </tr>
 <tr>
-<td data-label="Document">Form 11 depus și confirmările de plată</td>
+<td data-label="Document">Form 11 depus și confirmările de plată</td>
 <td data-label="Dovedește">Ce ai declarat și plătit</td>
 <td data-label="De unde vine">ROS</td>
 </tr>
@@ -3694,65 +3708,65 @@ section[data-sid="ten-things"] ol > li::before {
 <li>Dacă plătești cu cardul din contul taxiului, extrasul bancar acoperă orice bon pierdut (dar bonul rămâne dovada mai puternică).</li>
 </ul>
 <h3 id="part-8-3">Un sistem simplu de dosare</h3>
-<ul class="tree"><li style="--depth:0"><code class="tree-name">Taxi 2026/</code></li><li style="--depth:1"><code class="tree-name">Bonuri de sortat/</code><span class="tree-note">fotografiile ajung aici în timpul săptămânii</span></li><li style="--depth:1"><code class="tree-name">01 ian/ ... 12 dec/</code><span class="tree-note">bonuri, extrase din aplicații și de card, extras bancar</span></li><li style="--depth:1"><code class="tree-name">Situații anuale/</code><span class="tree-note">rezumate anuale din aplicații, dobândă, asigurare, pensie</span></li><li style="--depth:1"><code class="tree-name">Mașina/</code><span class="tree-note">contract de cumpărare sau HP, scrisori pentru grant, fotografii ale kilometrajului</span></li><li style="--depth:1"><code class="tree-name">Declarația fiscală/</code><span class="tree-note">copie Form 11, chitanțe de plată, certificat de conformitate fiscală</span></li><li style="--depth:1"><code class="tree-name">Rezumat.xlsx</code><span class="tree-note">un rând pe lună: încasări și cheltuieli pe categorii</span></li></ul>
+<ul class="tree"><li style="--depth:0"><code class="tree-name">Taxi 2026/</code></li><li style="--depth:1"><code class="tree-name">Bonuri de sortat/</code><span class="tree-note">fotografiile ajung aici în timpul săptămânii</span></li><li style="--depth:1"><code class="tree-name">01 ian/ ... 12 dec/</code><span class="tree-note">bonuri, extrase din aplicații și de card, extras bancar</span></li><li style="--depth:1"><code class="tree-name">Situații anuale/</code><span class="tree-note">rezumate anuale din aplicații, dobândă, asigurare, pensie</span></li><li style="--depth:1"><code class="tree-name">Mașina/</code><span class="tree-note">contract de cumpărare sau HP, scrisori pentru grant, fotografii ale kilometrajului</span></li><li style="--depth:1"><code class="tree-name">Declarația fiscală/</code><span class="tree-note">copie Form 11, chitanțe de plată, certificat de conformitate fiscală</span></li><li style="--depth:1"><code class="tree-name">Rezumat.xlsx</code><span class="tree-note">un rând pe lună: încasări și cheltuieli pe categorii</span></li></ul>
 <p>Denumește fișierele cu data la început (<code>2026-03-14 Combustibil 62.50.jpg</code>), ca să se ordoneze singure.</p>
 <h3 id="part-8-4">Când păstrezi documentele mai mult de șase ani</h3>
 <ul>
 <li>Documentele de cumpărare și de vânzare ale mașinii: păstrează-le șase ani <strong>după anul în care vinzi mașina</strong>, pentru că susțin amortizarea fiscală din fiecare an.</li>
 <li>Orice document legat de un an aflat în verificare sau în contestație la Revenue: păstrează-l până la închiderea cazului.</li>
 </ul>
-</section><section id="part-9" data-sid="part-9" aria-labelledby="part-9-h"><h2 id="part-9-h" tabindex="-1"><span class="kicker">Partea 9</span><span class="h2-title">Depunerea Form 11 pas cu pas</span></h2><p>Dacă rezumatul tău lunar folosește categoriile de mai jos, completarea Form 11 înseamnă în mare parte copierea totalurilor pe 12 luni în căsuțele potrivite. ROS calculează impozitul în locul tău.</p>
-<h3 id="part-9-1">Categoriile tale de cheltuieli, potrivite cu căsuțele din Form 11</h3>
+</section><section id="part-9" data-sid="part-9" aria-labelledby="part-9-h"><h2 id="part-9-h" tabindex="-1"><span class="kicker">Partea 9</span><span class="h2-title">Depunerea Form 11 pas cu pas</span></h2><p>Dacă rezumatul tău lunar folosește categoriile de mai jos, completarea Form 11 înseamnă în mare parte copierea totalurilor pe 12 luni în căsuțele potrivite. ROS calculează impozitul în locul tău.</p>
+<h3 id="part-9-1">Categoriile tale de cheltuieli, potrivite cu căsuțele din Form 11</h3>
 <p>Folosește aceste categorii în rezumatul lunar tot anul:</p>
-<div class="tbl" role="region" tabindex="0" aria-label="Categoriile tale de cheltuieli, potrivite cu căsuțele din Form 11">
+<div class="tbl" role="region" tabindex="0" aria-label="Categoriile tale de cheltuieli, potrivite cu căsuțele din Form 11">
 <table>
 <thead>
 <tr>
 <th>Categoria ta</th>
 <th>Ce intră în ea</th>
-<th>Căsuța din Form 11 (Extracts from Accounts)</th>
+<th>Căsuța din Form 11 (Extracts from Accounts)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td data-label="Categoria ta">Încasări</td>
 <td data-label="Ce intră în ea">Curse în numerar, curse cu cardul, curse prin aplicații înainte de comision, tot bacșișul</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Sales / Receipts / Turnover</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Sales / Receipts / Turnover</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Auto</td>
 <td data-label="Ce intră în ea">Combustibil sau încărcare, asigurare, service, reparații, anvelope, NCT, motor tax, taxe de drum, parcare, curățare</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Motor, Travel and Subsistence</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Motor, Travel and Subsistence</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Contabil</td>
 <td data-label="Ce intră în ea">Onorariile pentru contabil și contabilitate</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Consultancy and Professional Fees</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Consultancy and Professional Fees</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Salarii</td>
 <td data-label="Ce intră în ea">Un salariu real plătit partenerului sau unui ajutor, prin payroll</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Salaries / Wages</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Salaries / Wages</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Reparații la echipamente</td>
 <td data-label="Ce intră în ea">Reparații la aparatul de taxat, lampa de pe plafon sau terminalul de card</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Repairs / Renewals</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Repairs / Renewals</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Altele</td>
 <td data-label="Ce intră în ea">Taxele pentru licența SPSV, taxele pentru aplicații și dispecerat, comisioanele de card, telefonul, comisioanele bancare, dobânda la credit sau HP, ratele de leasing, cotizațiile, consumabilele</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Other Expenses</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Other Expenses</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Partea personală, adăugată înapoi la profit</td>
 <td data-label="Ce intră în ea">Partea personală din costurile auto și de telefon</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Adjustments: Motor Expenses private element; Light, Heat and Phone private element</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Adjustments: Motor Expenses private element; Light, Heat and Phone private element</td>
 </tr>
 <tr>
 <td data-label="Categoria ta">Amortizare fiscală</td>
 <td data-label="Ce intră în ea">40% pentru taxi; 12.5% pentru lampă, aparatul de taxat și alte echipamente, doar partea de afaceri</td>
-<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Secțiunea Capital allowances din panoul pentru activitatea pe cont propriu (nu ca cheltuială)</td>
+<td data-label="Căsuța din Form 11 (Extracts from Accounts)">Secțiunea Capital allowances din panoul pentru activitatea pe cont propriu (nu ca cheltuială)</td>
 </tr>
 </tbody>
 </table>
@@ -3761,7 +3775,7 @@ section[data-sid="ten-things"] ol > li::before {
 <h3 id="part-9-2">Pașii pentru depunere</h3>
 <ol>
 <li><strong>Adună cifrele.</strong> Totalurile anului pentru fiecare categorie, procentul de uz profesional, calculul amortizării fiscale, certificatul privind contribuțiile la pensie, bonurile medicale și chitanțele de chirie.</li>
-<li><strong>Intră în ROS</strong> și deschide Form 11 precompletat pentru anul respectiv. Verifică din timp, cu mult înainte de termen, că certificatul tău ROS nu a expirat. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/key-steps-in-filing-your-tax-return.aspx" target="_blank" rel="noopener">Revenue: pașii principali</a>)</li>
+<li><strong>Intră în ROS</strong> și deschide Form 11 precompletat pentru anul respectiv. Verifică din timp, cu mult înainte de termen, că certificatul tău ROS nu a expirat. (<a href="https://www.revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/key-steps-in-filing-your-tax-return.aspx" target="_blank" rel="noopener">Revenue: pașii principali</a>)</li>
 <li><strong>Panoul pentru venituri din activitatea pe cont propriu.</strong> Descrie activitatea ca „taxi operator”, indică perioada contabilă (1 ianuarie – 31 decembrie) și completează Extracts from Accounts folosind tabelul de mai sus.</li>
 <li><strong>Ajustări.</strong> Adaugă înapoi partea personală din costurile auto și de telefon.</li>
 <li><strong>Amortizare fiscală.</strong> Introdu amortizarea (wear and tear allowance) pentru taxi și echipamente; introdu orice ajustare de echilibrare (balancing allowance sau balancing charge) dacă ai vândut o mașină.</li>
@@ -3879,7 +3893,7 @@ section[data-sid="ten-things"] ol > li::before {
 <td data-label="Ce înseamnă">Confirmarea Revenue că situația ta fiscală este în regulă; necesară pentru reînnoirea SPSV</td>
 </tr>
 <tr>
-<td data-label="Termen">Form 11</td>
+<td data-label="Termen">Form 11</td>
 <td data-label="Ce înseamnă">Declarația anuală de impozit pe venit pentru cei care lucrează pe cont propriu</td>
 </tr>
 <tr>
@@ -3936,7 +3950,7 @@ section[data-sid="ten-things"] ol > li::before {
 <li><a href="https://revenue.ie/en/self-assessment-and-self-employment/guide-to-self-assessment/preliminary-tax.aspx" target="_blank" rel="noopener">Revenue: impozitul preliminar</a></li>
 <li><a href="https://www.revenue.ie/en/tax-professionals/ebrief/2026/no-0342026.aspx" target="_blank" rel="noopener">Revenue eBrief 034/26: data Pay and File în ROS pentru 2026</a></li>
 <li><a href="https://revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/index.aspx" target="_blank" rel="noopener">Revenue: depunerea declarației</a> și <a href="https://www.revenue.ie/en/self-assessment-and-self-employment/filing-your-tax-return/key-steps-in-filing-your-tax-return.aspx" target="_blank" rel="noopener">pașii principali</a></li>
-<li><a href="https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-38/38-01-04j.pdf" target="_blank" rel="noopener">Revenue TDM 38-01-04J: Extracts from Accounts în Form 11</a></li>
+<li><a href="https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-38/38-01-04j.pdf" target="_blank" rel="noopener">Revenue TDM 38-01-04J: Extracts from Accounts în Form 11</a></li>
 <li><a href="https://www.revenue.ie/en/tax-professionals/tdm/income-tax-capital-gains-tax-corporation-tax/part-47/47-06-08.pdf" target="_blank" rel="noopener">Revenue TDM 47-06-08: penalitatea pentru depunere întârziată</a></li>
 <li><a href="https://www.revenue.ie/en/self-assessment-and-self-employment/making-a-disclosure/qualifying-disclosure.aspx" target="_blank" rel="noopener">Revenue: declarațiile voluntare calificate</a></li>
 <li><a href="https://www.revenue.ie/en/starting-a-business/starting-a-business/keeping-records.aspx" target="_blank" rel="noopener">Revenue: păstrarea documentelor</a></li>
