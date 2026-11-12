@@ -369,6 +369,11 @@ main:focus {
   display: none;
 }
 
+/* The calculator needs its script; without it the section would be dead inputs. */
+html:not(.js) .calc {
+  display: none;
+}
+
 /* ---------- Hero and the ledger ---------- */
 .hero {
   padding: var(--s6) 0 var(--s5);
@@ -1160,6 +1165,527 @@ section[data-sid="ten-things"] ol > li::before {
   cursor: pointer;
 }
 
+/* ---------- Calculator: the hero's ledger as a receipt you can type on ---------- */
+.calc {
+  padding-top: var(--s6);
+}
+
+.calc-intro {
+  margin: 0 0 var(--s2);
+  font-size: var(--fs-lead);
+  line-height: 1.5;
+}
+
+.calc-example {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.calc-form {
+  margin-top: var(--s5);
+}
+
+.calc-panel {
+  --pad: var(--s5);
+  container-type: inline-size;
+  max-width: calc(var(--ledger-w) + 2 * var(--s6));
+  padding: var(--pad);
+  border-radius: var(--r-sheet);
+  background: var(--surface);
+}
+
+.calc-panel p {
+  max-width: none;
+}
+
+/* Segmented choices: a paper track, an ink thumb that slides to the chosen option. */
+.calc-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  margin-bottom: var(--s4);
+}
+
+.calc-choices .seg {
+  flex: 1 1 auto;
+}
+
+.seg {
+  --n: 2;
+  --i: 0;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  min-width: 0;
+  margin: 0;
+  padding: 3px;
+  border: 0;
+  border-radius: var(--r-control);
+  background: var(--paper);
+}
+
+.seg:has(> label:nth-of-type(3)) {
+  --n: 3;
+}
+
+.seg:has(> label:nth-of-type(2) input:checked) {
+  --i: 1;
+}
+
+.seg:has(> label:nth-of-type(3) input:checked) {
+  --i: 2;
+}
+
+.seg::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc((100% - 6px) / var(--n));
+  height: calc(100% - 6px);
+  border-radius: calc(var(--r-control) - 3px);
+  background: var(--ink);
+  box-shadow: 0 1px 2px var(--shadow-1);
+  transform: translateX(calc(var(--i) * 100%));
+  transition: transform var(--d1) var(--ease-out);
+}
+
+.seg:has(input:focus-visible) {
+  outline: 2px solid var(--signal-ink);
+  outline-offset: 3px;
+}
+
+.seg label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: var(--tap);
+  min-height: var(--tap);
+  padding: 0 var(--s3);
+  font-size: var(--fs-small);
+  font-weight: 650;
+  line-height: 1.25;
+  text-align: center;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color var(--d1) var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.seg label:has(input:checked) {
+  color: var(--paper);
+}
+
+.seg input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.seg-stack {
+  grid-auto-flow: row;
+  grid-auto-columns: auto;
+  grid-auto-rows: 1fr;
+  margin: var(--s3) 0 var(--s2);
+}
+
+.seg-stack::before {
+  width: calc(100% - 6px);
+  height: calc((100% - 6px) / var(--n));
+  transform: translateY(calc(var(--i) * 100%));
+}
+
+.seg-stack label {
+  place-items: center start;
+  padding: var(--s2) var(--s4);
+  font-size: var(--fs-body);
+  text-align: left;
+}
+
+/* Rows sit on the hero ledger's grid: the label on the left, the figure on the right. */
+.calc-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s4);
+  align-items: baseline;
+  padding: var(--s2) 0;
+}
+
+.calc-row[hidden] {
+  display: none;
+}
+
+/* Under 16rem of panel (phones narrower than ~350px) a figure field leaves its label a 70px column and long words
+   stick out of it: each label takes its own line, the figure right-aligned under it. */
+@container (max-width: 16rem) {
+  .calc-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.calc-row > label {
+  line-height: 1.3;
+}
+
+.calc-field {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+  justify-self: end;
+  border-bottom: 1px solid var(--ink-2);
+  font-size: var(--fs-h3);
+  font-weight: 650;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  transition: border-color var(--d0) var(--ease-out);
+}
+
+.calc-field:hover {
+  border-bottom-color: var(--ink);
+}
+
+.calc-field:has(.calc-input:focus-visible) {
+  outline: 2px solid var(--signal-ink);
+  outline-offset: 3px;
+  border-radius: var(--s1);
+}
+
+.calc-field:has([aria-invalid="true"]) {
+  border-bottom-color: var(--bad);
+  box-shadow: 0 1px 0 var(--bad);
+}
+
+.calc-field:has([readonly]) {
+  border-bottom-style: dotted;
+}
+
+.calc-unit {
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.calc-input {
+  width: 8ch;
+  min-height: var(--tap);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.calc-input:focus-visible {
+  outline: none;
+}
+
+.calc-input[inputmode="numeric"] {
+  width: 5ch;
+}
+
+.calc-input[readonly] {
+  color: var(--ink-2);
+  cursor: default;
+}
+
+.calc-hint,
+.calc-error,
+.calc-note,
+.calc-tip,
+.calc-switch {
+  grid-column: 1 / -1;
+}
+
+.calc-hint,
+.calc-note {
+  margin: var(--s1) 0 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.calc-hint:empty {
+  display: none;
+}
+
+/* Advice that comes and goes, such as "still the guide's example": in signal ink so it is noticed. */
+.calc-advice {
+  font-weight: 550;
+  color: var(--signal-ink);
+  animation: fade-in var(--d1) var(--ease-out);
+}
+
+/* "a year" beside figures that stay yearly in weekly mode. */
+.calc-per {
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.calc-error {
+  margin: var(--s1) 0 0;
+  font-size: var(--fs-small);
+  font-weight: 550;
+  color: var(--bad);
+  animation: fade-in var(--d1) var(--ease-out);
+}
+
+.calc-note:not(:has(output:not(:empty))),
+.calc-tip:has(output:empty) {
+  display: none;
+}
+
+.calc-tip {
+  margin: var(--s3) 0 0;
+  padding: var(--s3) var(--s4);
+  border-left: 3px solid var(--signal);
+  border-radius: 0 var(--r-control) var(--r-control) 0;
+  background: var(--paper);
+  font-size: var(--fs-small);
+  animation: fade-in var(--d1) var(--ease-out);
+}
+
+.calc-switch,
+.calc-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: var(--tap);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: var(--fs-small);
+  font-weight: 650;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--ink-2);
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.calc-switch:hover,
+.calc-reset:hover {
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+}
+
+/* Folds: the row track grows from 0fr to 1fr, so the height animates without being measured. The inner box bleeds
+   by --s2 each side so a focus ring near the edge is not clipped. */
+.calc-fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--d2) var(--ease-out);
+}
+
+.calc-fold.is-open {
+  grid-template-rows: 1fr;
+}
+
+.calc-fold-inner {
+  min-height: 0;
+  margin: 0 calc(-1 * var(--s2));
+  padding: 0 var(--s2);
+  overflow: hidden;
+}
+
+/* The taxi's allowance is a sum inside a sum: indented on a hairline under the figure it fills. */
+#calc-car .calc-fold-inner > * {
+  margin: 0;
+  padding-left: var(--s4);
+  border-left: 2px solid var(--rule);
+}
+
+#calc-car .calc-note {
+  padding-top: var(--s1);
+  padding-bottom: var(--s2);
+}
+
+.calc-more {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s4);
+  align-items: center;
+  width: 100%;
+  min-height: var(--tap);
+  margin: var(--s4) 0 0;
+  padding: var(--s3) 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.calc-more-label {
+  grid-column: 1;
+  font-weight: 650;
+}
+
+.calc-more-summary {
+  grid-column: 1;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+.calc-more::after {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 0.5em;
+  height: 0.5em;
+  margin: 0 0.25em 0.25em 0;
+  border: solid var(--ink-2);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  transition: transform var(--d1) var(--ease-out), border-color var(--d0) var(--ease-out);
+}
+
+.calc-more:hover::after {
+  border-color: var(--ink);
+}
+
+.calc-more[aria-expanded="true"]::after {
+  transform: translateY(0.25em) rotate(-135deg);
+}
+
+/* The sums: computed lines in ink-2 with ink figures, then the total, the one bold thing. */
+.calc-rule {
+  height: 3px;
+  margin: var(--s5) 0 var(--s3);
+  border-radius: 2px;
+  background: var(--signal);
+}
+
+.calc-line,
+.calc-total {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s4);
+  align-items: baseline;
+}
+
+.calc-line {
+  padding: var(--s1) 0;
+  color: var(--ink-2);
+  line-height: 1.3;
+}
+
+.calc-line > :last-child,
+.calc-total > :last-child {
+  min-width: 5ch;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-line > :last-child {
+  font-size: var(--fs-lead);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.calc-line .calc-hint {
+  display: block;
+  margin: 0;
+}
+
+.calc-due {
+  margin-top: var(--s2);
+  padding-top: var(--s2);
+  border-top: 1px solid var(--rule);
+  color: var(--ink);
+  font-weight: 650;
+}
+
+/* Sticky so the answer stays on screen while any field above it is edited: above the Contents pill on phones,
+   on the window's edge from 1024px. It spans the panel's padding so nothing shows beside it as rows pass under. */
+.calc-total {
+  position: sticky;
+  bottom: calc(var(--tap) + var(--s4) + var(--s3) + env(safe-area-inset-bottom));
+  z-index: 1;
+  margin: var(--s2) calc(-1 * var(--pad)) 0;
+  padding: var(--s3) var(--pad);
+  border-top: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.calc-total > :first-child {
+  font-weight: 650;
+}
+
+.calc-total > :last-child {
+  font-size: var(--fs-h2);
+  font-weight: 720;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.01em;
+  color: var(--signal-ink);
+}
+
+.calc-share {
+  margin: var(--s3) 0;
+  font-weight: 550;
+}
+
+.calc-bar {
+  height: var(--s2);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.calc-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--signal-mark);
+  transform-origin: left center;
+  transform: scaleX(var(--part, 0));
+  transition: transform var(--d2) var(--ease-out);
+}
+
+.calc-split {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s1) var(--s4);
+  margin: var(--s2) 0 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-reset {
+  margin-top: var(--s4);
+  color: var(--ink-2);
+}
+
+.calc-small {
+  margin: var(--s2) 0 0;
+  font-size: var(--fs-small);
+  color: var(--ink-2);
+}
+
+@media (min-width: 768px) {
+  .calc-panel {
+    --pad: var(--s6);
+  }
+}
+
+@media (min-width: 1024px) {
+  .calc-total {
+    bottom: 0;
+  }
+}
+
 /* ---------- Motion: one orchestrated load moment, the rest answers the reader ---------- */
 .sr-only {
   position: absolute;
@@ -1379,7 +1905,7 @@ section[data-sid="ten-things"] ol > li::before {
   <aside class="rail">
     <div class="lang" role="radiogroup" aria-label="Language" data-i18n-aria="langLabel"><button type="button" role="radio" data-lang="en" aria-checked="true" tabindex="0" lang="en" aria-label="English">EN</button><button type="button" role="radio" data-lang="ro" aria-checked="false" tabindex="-1" lang="ro" aria-label="Română">RO</button></div>
     <div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">File and pay on ROS by 18 November 2026</p></div>
-    <nav class="toc" data-region="toc" aria-label="Contents" data-i18n-aria="contents"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
+    <nav class="toc" data-region="toc" aria-label="Contents" data-i18n-aria="contents"><ol><li><a href="#calculator" data-sid="calculator"><span class="toc-kicker"></span><span class="toc-title">Tax calculator</span></a></li><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
   </aside>
   <main id="main" tabindex="-1">
     <div data-region="hero"><header class="hero"><h1 class="hero-title">Irish Tax for Taxi Drivers</h1><p class="hero-sub">The Plain-English Guide</p><p class="hero-meta">Nov 11, 2026 · @kuku</p><figure class="ledger"><span class="ledger-label">Takings</span><span class="ledger-fig">€<span class="d">6</span><span class="d">2</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Business expenses</span><span class="ledger-fig">−€<span class="d">1</span><span class="d">8</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Capital allowances</span><span class="ledger-fig">−€<span class="d">4</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><div class="ledger-rule" aria-hidden="true"></div><span class="ledger-label ledger-total">Taxable profit</span><span class="ledger-fig ledger-total">€<span class="d">4</span><span class="d">0</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><figcaption class="ledger-line">You pay tax on profit, not takings.</figcaption></figure><div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">File and pay on ROS by 18 November 2026</p></div><p class="lead">As a self-employed taxi driver you pay income tax, USC and PRSI on your <strong>profit</strong>, through one yearly return. The biggest legal savings come from three places: recording every real expense, the special 40% allowance on your taxi, and pension contributions. Your next deadline is Nov 18, 2026 if your 2025 return is not filed yet.</p></header></div>
@@ -1387,6 +1913,7 @@ section[data-sid="ten-things"] ol > li::before {
       <p data-i18n="installHint">Install on your iPhone: tap Share, then Add to Home Screen.</p>
       <button type="button" data-i18n="dismiss">Got it</button>
     </div>
+    <section id="calculator" data-sid="calculator" data-region="calc" class="calc" aria-labelledby="calculator-h"><h2 id="calculator-h" tabindex="-1"><span class="h2-title" data-i18n="calc.title">Work out your tax</span></h2><p class="calc-intro" data-i18n="calc.intro">Type your own figures. They stay on this device.</p><p class="calc-example" data-i18n="calc.example">These are the guide&#x27;s example figures. Type yours over them.</p><form class="calc-form" novalidate><div class="calc-panel"><div class="calc-choices"><fieldset class="seg" data-field="year"><legend class="sr-only" data-i18n="calc.year">Tax year</legend><label><input type="radio" name="calc-year" value="2025"><span>2025</span></label><label><input type="radio" name="calc-year" value="2026"><span>2026</span></label><label><input type="radio" name="calc-year" value="2027"><span>2027</span></label></fieldset><fieldset class="seg" data-field="period"><legend class="sr-only" data-i18n="calc.period">Amounts</legend><label><input type="radio" name="calc-period" value="year"><span data-i18n="calc.perYear">A year</span></label><label><input type="radio" name="calc-period" value="week"><span data-i18n="calc.perWeek">A week</span></label></fieldset></div><div class="calc-row" data-row="takings"><label for="calc-takings" data-i18n="calc.takings">Takings</label><span class="calc-field"><span class="calc-unit" aria-hidden="true">€</span><input class="calc-input" id="calc-takings" data-field="takings" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-takings-hint calc-takings-error"></span><p class="calc-hint" id="calc-takings-hint" data-i18n="calc.takingsHint">Every fare and tip, before app commission</p><p class="calc-error" id="calc-takings-error" data-error-for="takings" hidden></p></div><div class="calc-row" data-row="expenses"><label for="calc-expenses" data-i18n="calc.expenses">Business expenses</label><span class="calc-field"><span class="calc-unit" aria-hidden="true">−€</span><input class="calc-input" id="calc-expenses" data-field="expenses" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-expenses-error"></span><p class="calc-error" id="calc-expenses-error" data-error-for="expenses" hidden></p></div><div class="calc-row" data-row="allowances"><label for="calc-allowances"><span data-i18n="calc.allowances">Capital allowances</span> <span class="calc-per" data-i18n="calc.aYear" hidden>a year</span></label><span class="calc-field"><span class="calc-unit" aria-hidden="true">−€</span><input class="calc-input" id="calc-allowances" data-field="allowances" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-allowances-hint calc-allowances-error"></span><p class="calc-hint calc-advice" id="calc-allowances-hint" data-out="allowancesAdvice"></p><button type="button" class="calc-switch" data-action="car" aria-expanded="false" aria-controls="calc-car" data-i18n="calc.allowancesCar">Work it out from your taxi</button><p class="calc-error" id="calc-allowances-error" data-error-for="allowances" hidden></p></div><div class="calc-fold" id="calc-car" inert><div class="calc-fold-inner"><div class="calc-row" data-row="carPrice"><label for="calc-carPrice" data-i18n="calc.carPrice">Price you paid, after any grant</label><span class="calc-field"><span class="calc-unit" aria-hidden="true">€</span><input class="calc-input" id="calc-carPrice" data-field="carPrice" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-carPrice-error"></span><p class="calc-error" id="calc-carPrice-error" data-error-for="carPrice" hidden></p></div><div class="calc-row" data-row="carBought"><label for="calc-carBought" data-i18n="calc.carBought">Year you bought it</label><span class="calc-field"><input class="calc-input" id="calc-carBought" data-field="carBought" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-describedby="calc-carBought-error"></span><p class="calc-error" id="calc-carBought-error" data-error-for="carBought" hidden></p></div><div class="calc-row" data-row="carUse"><label for="calc-carUse" data-i18n="calc.carUse">Business use, %</label><span class="calc-field"><input class="calc-input" id="calc-carUse" data-field="carUse" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-describedby="calc-carUse-error"></span><p class="calc-error" id="calc-carUse-error" data-error-for="carUse" hidden></p></div><p class="calc-note"><output data-out="carResult"></output></p></div></div><div class="calc-row" data-row="weeks" hidden><label for="calc-weeks" data-i18n="calc.weeks">Weeks you work a year</label><span class="calc-field"><input class="calc-input" id="calc-weeks" data-field="weeks" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-describedby="calc-weeks-error"></span><p class="calc-error" id="calc-weeks-error" data-error-for="weeks" hidden></p></div><button type="button" class="calc-more" aria-expanded="false" aria-controls="calc-about"><span class="calc-more-label" data-i18n="calc.about">About you</span><span class="calc-more-summary"></span></button><div class="calc-fold" id="calc-about" inert><div class="calc-fold-inner"><fieldset class="seg seg-stack" data-field="household"><legend class="sr-only" data-i18n="calc.household">Household</legend><label><input type="radio" name="calc-household" value="single"><span data-i18n="calc.single">Single</span></label><label><input type="radio" name="calc-household" value="singleParent"><span data-i18n="calc.singleParent">Single parent</span></label><label><input type="radio" name="calc-household" value="married"><span data-i18n="calc.married">Married or civil partners</span></label></fieldset><div class="calc-row" data-row="partnerPay" hidden><label for="calc-partnerPay" data-i18n="calc.partnerPay">Partner&#x27;s yearly pay from a job</label><span class="calc-field"><span class="calc-unit" aria-hidden="true">€</span><input class="calc-input" id="calc-partnerPay" data-field="partnerPay" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-partnerPay-hint calc-partnerPay-error"></span><p class="calc-hint" id="calc-partnerPay-hint" data-i18n="calc.partnerHint">0 if they have no income</p><p class="calc-error" id="calc-partnerPay-error" data-error-for="partnerPay" hidden></p></div><div class="calc-row" data-row="partnerAge" hidden><label for="calc-partnerAge" data-i18n="calc.partnerAge">Partner&#x27;s age on 31 December</label><span class="calc-field"><input class="calc-input" id="calc-partnerAge" data-field="partnerAge" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-describedby="calc-partnerAge-error"></span><p class="calc-error" id="calc-partnerAge-error" data-error-for="partnerAge" hidden></p></div><div class="calc-row" data-row="age"><label for="calc-age" data-i18n="calc.age">Your age on 31 December</label><span class="calc-field"><input class="calc-input" id="calc-age" data-field="age" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" aria-describedby="calc-age-error"></span><p class="calc-error" id="calc-age-error" data-error-for="age" hidden></p></div><div class="calc-row" data-row="pension"><label for="calc-pension" data-i18n="calc.pension">Pension contributions this year</label><span class="calc-field"><span class="calc-unit" aria-hidden="true">€</span><input class="calc-input" id="calc-pension" data-field="pension" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-pension-error"></span><p class="calc-note"><output data-out="pensionLimit"></output> <output data-out="pensionNote"></output></p><p class="calc-tip"><output data-out="pensionTip"></output></p><p class="calc-error" id="calc-pension-error" data-error-for="pension" hidden></p></div><div class="calc-row" data-row="credits"><label for="calc-credits" data-i18n="calc.credits">Other tax credits</label><span class="calc-field"><span class="calc-unit" aria-hidden="true">€</span><input class="calc-input" id="calc-credits" data-field="credits" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-credits-hint calc-credits-error"></span><p class="calc-hint" id="calc-credits-hint" data-i18n="calc.creditsHint">Rent, health and similar</p><p class="calc-error" id="calc-credits-error" data-error-for="credits" hidden></p></div></div></div><div class="calc-rule" aria-hidden="true"></div><div class="calc-line"><span data-i18n="calc.profit">Taxable profit</span><output data-out="profit"></output></div><div class="calc-line"><span data-i18n="calc.incomeTax">Income tax</span><output data-out="incomeTax"></output></div><div class="calc-line"><span data-i18n="calc.usc">USC</span><output data-out="usc"></output></div><div class="calc-line"><span data-i18n="calc.prsi">PRSI</span><output data-out="prsi"></output></div><div class="calc-total"><span><span data-i18n="calc.total">Total tax</span> <span class="calc-per" data-i18n="calc.aYear" hidden>a year</span></span><output data-out="total"></output></div><p class="calc-share"><output data-out="share"></output> <output data-out="weekly"></output></p><div class="calc-bar" aria-hidden="true"><span class="calc-bar-fill"></span></div><p class="calc-split"><output data-out="taxPart"></output><output data-out="keep"></output></p><button type="button" class="calc-more" aria-expanded="false" aria-controls="calc-deadline"><span class="calc-more-label" data-i18n="calc.deadline">At the deadline</span><span class="calc-more-summary"></span></button><div class="calc-fold" id="calc-deadline" inert><div class="calc-fold-inner"><div class="calc-row" data-row="prelimPaid"><label for="calc-prelimPaid" data-tpl="calc.prelimPaid"></label><span class="calc-field"><span class="calc-unit" aria-hidden="true">€</span><input class="calc-input" id="calc-prelimPaid" data-field="prelimPaid" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" aria-describedby="calc-prelimPaid-error"></span><p class="calc-error" id="calc-prelimPaid-error" data-error-for="prelimPaid" hidden></p></div><div class="calc-line"><span data-tpl="calc.balance"></span><output data-out="balance"></output></div><div class="calc-line"><span><span data-tpl="calc.nextPrelim"></span><span class="calc-hint"><span data-i18n="calc.nextPrelimHint">100% of this year&#x27;s tax, the safe option</span></span></span><output data-out="nextPrelim"></output></div><div class="calc-line calc-due"><output data-out="dueLabel"></output><output data-out="due"></output></div></div></div><button class="calc-reset" data-i18n="calc.reset" type="button">Start again</button><p class="calc-small"><output data-out="assumptions"></output> <output data-out="marriedNote"></output> <output data-out="yearNote"></output></p><p class="sr-only" aria-live="polite" data-out="announce"></p></div></form></section>
     <article data-region="article"><section id="ten-things" data-sid="ten-things" aria-labelledby="ten-things-h"><h2 id="ten-things-h" tabindex="-1"><span class="h2-title">The 10 things that matter most</span></h2><ol>
 <li><strong>Next deadline:</strong> the 2025 Form 11, the 2025 balance and 2026 preliminary tax are due by Nov 18, 2026 if you both file and pay on ROS.</li>
 <li><strong>You are taxed on profit, not takings.</strong> Every genuine business cost you record cuts your bill by 26% to 47% of its value for most drivers.</li>
@@ -2696,10 +3223,10 @@ section[data-sid="ten-things"] ol > li::before {
     <p class="sheet-title" data-i18n="contents">Contents</p>
     <button class="sheet-close" type="button" aria-label="Close" data-i18n-aria="close">×</button>
   </div>
-  <nav class="toc" data-region="toc"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
+  <nav class="toc" data-region="toc"><ol><li><a href="#calculator" data-sid="calculator"><span class="toc-kicker"></span><span class="toc-title">Tax calculator</span></a></li><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">The 10 things that matter most</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">How to use this guide</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Part 1</span><span class="toc-title">The basics</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Part 2</span><span class="toc-title">Getting set up (do this once)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Part 3</span><span class="toc-title">The tax calendar</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Part 4</span><span class="toc-title">Every expense you can deduct</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Deep dive</span><span class="toc-title">Your car</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Part 5</span><span class="toc-title">Reliefs and credits that cut your bill further</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Deep dive</span><span class="toc-title">Pension contributions</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Part 6</span><span class="toc-title">Planning, avoidance and evasion</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Part 7</span><span class="toc-title">Your workflow</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Part 8</span><span class="toc-title">Records</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Part 9</span><span class="toc-title">Filing Form 11 step by step</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Part 10</span><span class="toc-title">If things go wrong</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glossary and sources</span></a></li></ol></nav>
 </dialog>
 <template id="lang-en"></template>
-<template id="lang-ro"><div data-part="hero"><header class="hero"><h1 class="hero-title">Taxele în Irlanda pentru taximetriști</h1><p class="hero-sub">Ghid pe înțelesul tuturor</p><p class="hero-meta">11 noiembrie 2026 · @kuku</p><figure class="ledger"><span class="ledger-label">Încasări</span><span class="ledger-fig">€<span class="d">6</span><span class="d">2</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Cheltuieli de afaceri</span><span class="ledger-fig">−€<span class="d">1</span><span class="d">8</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Amortizare fiscală</span><span class="ledger-fig">−€<span class="d">4</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><div class="ledger-rule" aria-hidden="true"></div><span class="ledger-label ledger-total">Profit impozabil</span><span class="ledger-fig ledger-total">€<span class="d">4</span><span class="d">0</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><figcaption class="ledger-line">Plătești impozit pe profit, nu pe încasări.</figcaption></figure><div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">Depui și plătești pe ROS până pe 18 noiembrie 2026</p></div><p class="lead">Ca taximetrist care lucrează pe cont propriu, plătești impozit pe venit, USC și PRSI pe <strong>profit</strong>, printr-o singură declarație anuală. Cele mai mari economii legale vin din trei surse: înregistrarea fiecărei cheltuieli reale, amortizarea specială de 40% pentru taxi și contribuțiile la pensie. Următorul tău termen este 18 noiembrie 2026, dacă declarația pentru 2025 nu este încă depusă.</p><p class="note">Aceasta este o traducere a ghidului în limba engleză. Dacă textele diferă, versiunea în engleză este cea valabilă.</p></header></div><nav data-part="toc"><ol><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">Cele 10 lucruri care contează cel mai mult</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">Cum să folosești acest ghid</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Partea 1</span><span class="toc-title">Bazele</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Partea 2</span><span class="toc-title">Primii pași (o singură dată)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Partea 3</span><span class="toc-title">Calendarul fiscal</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Partea 4</span><span class="toc-title">Toate cheltuielile pe care le poți deduce</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Pe larg</span><span class="toc-title">Mașina ta</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Partea 5</span><span class="toc-title">Facilități și credite fiscale care îți reduc și mai mult factura</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Pe larg</span><span class="toc-title">Contribuțiile la pensie</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Partea 6</span><span class="toc-title">Planificare, evitare și evaziune</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Partea 7</span><span class="toc-title">Rutina ta</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Partea 8</span><span class="toc-title">Documente</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Partea 9</span><span class="toc-title">Depunerea Form 11 pas cu pas</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Partea 10</span><span class="toc-title">Dacă ceva nu merge bine</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glosar și surse</span></a></li></ol></nav><div data-part="article"><section id="ten-things" data-sid="ten-things" aria-labelledby="ten-things-h"><h2 id="ten-things-h" tabindex="-1"><span class="h2-title">Cele 10 lucruri care contează cel mai mult</span></h2><ol>
+<template id="lang-ro"><div data-part="hero"><header class="hero"><h1 class="hero-title">Taxele în Irlanda pentru taximetriști</h1><p class="hero-sub">Ghid pe înțelesul tuturor</p><p class="hero-meta">11 noiembrie 2026 · @kuku</p><figure class="ledger"><span class="ledger-label">Încasări</span><span class="ledger-fig">€<span class="d">6</span><span class="d">2</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Cheltuieli de afaceri</span><span class="ledger-fig">−€<span class="d">1</span><span class="d">8</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><span class="ledger-label">Amortizare fiscală</span><span class="ledger-fig">−€<span class="d">4</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><div class="ledger-rule" aria-hidden="true"></div><span class="ledger-label ledger-total">Profit impozabil</span><span class="ledger-fig ledger-total">€<span class="d">4</span><span class="d">0</span>,<span class="d">0</span><span class="d">0</span><span class="d">0</span></span><figcaption class="ledger-line">Plătești impozit pe profit, nu pe încasări.</figcaption></figure><div class="deadline" data-deadline><p class="deadline-days"></p><p class="deadline-sub">Depui și plătești pe ROS până pe 18 noiembrie 2026</p></div><p class="lead">Ca taximetrist care lucrează pe cont propriu, plătești impozit pe venit, USC și PRSI pe <strong>profit</strong>, printr-o singură declarație anuală. Cele mai mari economii legale vin din trei surse: înregistrarea fiecărei cheltuieli reale, amortizarea specială de 40% pentru taxi și contribuțiile la pensie. Următorul tău termen este 18 noiembrie 2026, dacă declarația pentru 2025 nu este încă depusă.</p><p class="note">Aceasta este o traducere a ghidului în limba engleză. Dacă textele diferă, versiunea în engleză este cea valabilă.</p></header></div><nav data-part="toc"><ol><li><a href="#calculator" data-sid="calculator"><span class="toc-kicker"></span><span class="toc-title">Calculator de taxe</span></a></li><li><a href="#ten-things" data-sid="ten-things"><span class="toc-kicker"></span><span class="toc-title">Cele 10 lucruri care contează cel mai mult</span></a></li><li><a href="#how-to-use" data-sid="how-to-use"><span class="toc-kicker"></span><span class="toc-title">Cum să folosești acest ghid</span></a></li><li><a href="#part-1" data-sid="part-1"><span class="toc-kicker">Partea 1</span><span class="toc-title">Bazele</span></a></li><li><a href="#part-2" data-sid="part-2"><span class="toc-kicker">Partea 2</span><span class="toc-title">Primii pași (o singură dată)</span></a></li><li><a href="#part-3" data-sid="part-3"><span class="toc-kicker">Partea 3</span><span class="toc-title">Calendarul fiscal</span></a></li><li><a href="#part-4" data-sid="part-4"><span class="toc-kicker">Partea 4</span><span class="toc-title">Toate cheltuielile pe care le poți deduce</span></a></li><li><a href="#car" data-sid="car"><span class="toc-kicker">Pe larg</span><span class="toc-title">Mașina ta</span></a></li><li><a href="#part-5" data-sid="part-5"><span class="toc-kicker">Partea 5</span><span class="toc-title">Facilități și credite fiscale care îți reduc și mai mult factura</span></a></li><li><a href="#pension" data-sid="pension"><span class="toc-kicker">Pe larg</span><span class="toc-title">Contribuțiile la pensie</span></a></li><li><a href="#part-6" data-sid="part-6"><span class="toc-kicker">Partea 6</span><span class="toc-title">Planificare, evitare și evaziune</span></a></li><li><a href="#part-7" data-sid="part-7"><span class="toc-kicker">Partea 7</span><span class="toc-title">Rutina ta</span></a></li><li><a href="#part-8" data-sid="part-8"><span class="toc-kicker">Partea 8</span><span class="toc-title">Documente</span></a></li><li><a href="#part-9" data-sid="part-9"><span class="toc-kicker">Partea 9</span><span class="toc-title">Depunerea Form 11 pas cu pas</span></a></li><li><a href="#part-10" data-sid="part-10"><span class="toc-kicker">Partea 10</span><span class="toc-title">Dacă ceva nu merge bine</span></a></li><li><a href="#glossary" data-sid="glossary"><span class="toc-kicker"></span><span class="toc-title">Glosar și surse</span></a></li></ol></nav><div data-part="article"><section id="ten-things" data-sid="ten-things" aria-labelledby="ten-things-h"><h2 id="ten-things-h" tabindex="-1"><span class="h2-title">Cele 10 lucruri care contează cel mai mult</span></h2><ol>
 <li><strong>Următorul termen:</strong> Form 11 pentru 2025, soldul pentru 2025 și impozitul preliminar (preliminary tax) pentru 2026 sunt scadente până la 18 noiembrie 2026, dacă atât depui, cât și plătești pe ROS.</li>
 <li><strong>Ești impozitat pe profit, nu pe încasări.</strong> Fiecare cheltuială reală de afaceri pe care o înregistrezi îți reduce factura cu 26% până la 47% din valoarea ei, pentru majoritatea șoferilor.</li>
 <li><strong>Declară fiecare cursă și fiecare bacșiș.</strong> Aplicațiile de taxi și companiile de plăți cu cardul îți raportează deja veniturile către Revenue.</li>
@@ -3997,7 +4524,200 @@ section[data-sid="ten-things"] ol > li::before {
 <li><a href="https://www.zurich.ie/blog/Everything-you-ever-needed-to-know-about-pension-contributions" target="_blank" rel="noopener">Zurich: contribuțiile la pensie pe înțeles</a></li>
 </ul>
 </section></div></template>
-<script type="application/json" id="strings">{"en": {"docTitle": "Irish Tax for Taxi Drivers", "skip": "Skip to the guide", "contents": "Contents", "close": "Close", "langLabel": "Language", "langEn": "English", "langRo": "Română", "clearTicks": "Clear ticks", "deadlineDays": "{days} to go", "deadlineSub": "File and pay on ROS by 18 November 2026", "deadlineToday": "Today is the ROS deadline", "deadlineAfter": "Every year: 31 October, or the ROS date in mid-November.", "installHint": "Install on your iPhone: tap Share, then Add to Home Screen.", "dismiss": "Got it", "ledger": {"takings": "Takings", "expenses": "Business expenses", "allowances": "Capital allowances", "profit": "Taxable profit", "line": "You pay tax on profit, not takings."}, "cycle": {"title": "The pay-and-file cycle: two deadlines across three tax years", "year": "Year {n}", "trade": "You drive, keep records and set money aside.", "first": "Usually no preliminary tax in your first year.", "deadline": "31 October, year {n}", "ros": "or the ROS date in mid-November", "file": "File the Year {p} Form 11", "balance": "Pay the Year {p} balance", "prelim": "Pay Year {n} preliminary tax"}, "chart": {"title": "The 40% taxi allowance, year by year", "caption": "€40,000 taxi, 100% business use. Ordinary car: 12.5% of the €24,000 cost cap (lowest-emission bands).", "year": "Year {n}", "ref": "Ordinary car: {ordinary} a year", "total": "After 8 years: {taxi} written off on the taxi, {ordinary_total} on an ordinary car."}, "deadlineDaysOne": "{days} to go"}, "ro": {"docTitle": "Taxele în Irlanda pentru taximetriști", "skip": "Sari la ghid", "contents": "Cuprins", "close": "Închide", "langLabel": "Limba", "langEn": "English", "langRo": "Română", "clearTicks": "Debifează tot", "deadlineDays": "{days} rămase", "deadlineSub": "Depui și plătești pe ROS până pe 18 noiembrie 2026", "deadlineToday": "Astăzi este termenul ROS", "deadlineAfter": "În fiecare an: 31 octombrie, sau data ROS de la jumătatea lui noiembrie.", "installHint": "Instalează pe iPhone: apasă pe butonul de partajare, apoi pe adăugare pe ecranul principal (Add to Home Screen).", "dismiss": "Am înțeles", "ledger": {"takings": "Încasări", "expenses": "Cheltuieli de afaceri", "allowances": "Amortizare fiscală", "profit": "Profit impozabil", "line": "Plătești impozit pe profit, nu pe încasări."}, "cycle": {"title": "Ciclul de depunere și plată: două termene în trei ani fiscali", "year": "Anul {n}", "trade": "Lucrezi, ții evidența și pui bani deoparte.", "first": "De obicei, în primul an nu plătești impozit preliminar.", "deadline": "31 octombrie, anul {n}", "ros": "sau data ROS de la jumătatea lui noiembrie", "file": "Depui Form 11 pentru anul {p}", "balance": "Plătești soldul pentru anul {p}", "prelim": "Plătești impozitul preliminar pentru anul {n}"}, "chart": {"title": "Amortizarea de 40% pentru taxi, an cu an", "caption": "Taxi de €40,000, folosit 100% în afaceri. Mașină obișnuită: 12.5% din plafonul de cost de €24,000 (benzile cu cele mai mici emisii).", "year": "Anul {n}", "ref": "Mașină obișnuită: {ordinary} pe an", "total": "După 8 ani: {taxi} deduși pentru taxi, {ordinary_total} pentru o mașină obișnuită."}, "deadlineDaysOne": "{days} rămasă"}}</script>
+<script type="application/json" id="strings">{"en": {"docTitle": "Irish Tax for Taxi Drivers", "skip": "Skip to the guide", "contents": "Contents", "close": "Close", "langLabel": "Language", "langEn": "English", "langRo": "Română", "clearTicks": "Clear ticks", "deadlineDays": "{days} to go", "deadlineSub": "File and pay on ROS by 18 November 2026", "deadlineToday": "Today is the ROS deadline", "deadlineAfter": "Every year: 31 October, or the ROS date in mid-November.", "installHint": "Install on your iPhone: tap Share, then Add to Home Screen.", "dismiss": "Got it", "ledger": {"takings": "Takings", "expenses": "Business expenses", "allowances": "Capital allowances", "profit": "Taxable profit", "line": "You pay tax on profit, not takings."}, "cycle": {"title": "The pay-and-file cycle: two deadlines across three tax years", "year": "Year {n}", "trade": "You drive, keep records and set money aside.", "first": "Usually no preliminary tax in your first year.", "deadline": "31 October, year {n}", "ros": "or the ROS date in mid-November", "file": "File the Year {p} Form 11", "balance": "Pay the Year {p} balance", "prelim": "Pay Year {n} preliminary tax"}, "chart": {"title": "The 40% taxi allowance, year by year", "caption": "€40,000 taxi, 100% business use. Ordinary car: 12.5% of the €24,000 cost cap (lowest-emission bands).", "year": "Year {n}", "ref": "Ordinary car: {ordinary} a year", "total": "After 8 years: {taxi} written off on the taxi, {ordinary_total} on an ordinary car."}, "deadlineDaysOne": "{days} to go", "calc": {"toc": "Tax calculator", "title": "Work out your tax", "intro": "Type your own figures. They stay on this device.", "example": "These are the guide's example figures. Type yours over them.", "year": "Tax year", "period": "Amounts", "perYear": "A year", "perWeek": "A week", "aYear": "a year", "takings": "Takings", "takingsHint": "Every fare and tip, before app commission", "expenses": "Business expenses", "allowances": "Capital allowances", "allowancesExample": "Still the guide's example. Type yours, or 0 if you have none.", "allowancesCar": "Work it out from your taxi", "allowancesAmount": "Type the amount instead", "carPrice": "Price you paid, after any grant", "carBought": "Year you bought it", "carUse": "Business use, %", "carResult": "40% of what is left of the price: {amount}", "weeks": "Weeks you work a year", "about": "About you", "aboutSummary": "{household} · age {age}", "aboutPension": "pension {amount}", "household": "Household", "single": "Single", "singleParent": "Single parent", "married": "Married or civil partners", "partnerPay": "Partner's yearly pay from a job", "partnerHint": "0 if they have no income", "partnerAge": "Partner's age on 31 December", "age": "Your age on 31 December", "pension": "Pension contributions this year", "pensionLimit": "Relief limit at your age: {amount}", "pensionOver": "{amount} is over your limit: no relief this year, but it carries forward.", "pensionTip": "Paying {extra} more into your pension would cut your income tax by {saving}.", "credits": "Other tax credits", "creditsHint": "Rent, health and similar", "profit": "Taxable profit", "incomeTax": "Income tax", "usc": "USC", "prsi": "PRSI", "total": "Total tax", "share": "Put aside {pct} of every week's takings.", "weekly": "About {amount} a week.", "keep": "You keep {amount}", "taxPart": "Tax is {pct} of profit", "noProfit": "No profit, so no tax to pay.", "deadline": "At the deadline", "prelimPaid": "Preliminary tax already paid for {year}", "balance": "{year} balance", "nextPrelim": "{year} preliminary tax", "nextPrelimHint": "100% of this year's tax, the safe option", "due": "To pay {when}", "dueRos": "by {date} on ROS", "dueOct": "by {date}, or the later ROS date", "overpaid": "You overpaid {amount} for {year}.", "reset": "Start again", "invalid": "Type an amount, like 62,000", "invalidWeeks": "Type a number of weeks from 1 to 53", "invalidAge": "Type an age from 16 to 100", "invalidUse": "Type a percentage from 0 to 100", "invalidYear": "Type a year like 2024", "assumptions": "An estimate using Revenue's {year} rates. It assumes the taxi is your only income (no job of your own, no rent, no losses carried forward), and that from 66 you get the State Pension: if you put it off, PRSI can go on until 70. It leaves out medical-card USC rates, PRSI in the year you turn 66, and the higher exemption limits for over-65s with dependent children.", "marriedNote": "For couples this is the income tax your taxi profit adds for the two of you. It assumes your partner's payslip already uses all your shared credits and 20% band; if it uses less, part of this is taken from their pay and the amount due at the deadline is lower. The Home Carer Credit is left out: you can have it or the bigger joint 20% band, not both.", "announce": "Total tax {total}. Put aside {pct} of your takings.", "yearNotes": {"2027": "2027 PRSI includes the planned rise to 4.5% on 1 October 2027."}}}, "ro": {"docTitle": "Taxele în Irlanda pentru taximetriști", "skip": "Sari la ghid", "contents": "Cuprins", "close": "Închide", "langLabel": "Limba", "langEn": "English", "langRo": "Română", "clearTicks": "Debifează tot", "deadlineDays": "{days} rămase", "deadlineSub": "Depui și plătești pe ROS până pe 18 noiembrie 2026", "deadlineToday": "Astăzi este termenul ROS", "deadlineAfter": "În fiecare an: 31 octombrie, sau data ROS de la jumătatea lui noiembrie.", "installHint": "Instalează pe iPhone: apasă pe butonul de partajare, apoi pe adăugare pe ecranul principal (Add to Home Screen).", "dismiss": "Am înțeles", "ledger": {"takings": "Încasări", "expenses": "Cheltuieli de afaceri", "allowances": "Amortizare fiscală", "profit": "Profit impozabil", "line": "Plătești impozit pe profit, nu pe încasări."}, "cycle": {"title": "Ciclul de depunere și plată: două termene în trei ani fiscali", "year": "Anul {n}", "trade": "Lucrezi, ții evidența și pui bani deoparte.", "first": "De obicei, în primul an nu plătești impozit preliminar.", "deadline": "31 octombrie, anul {n}", "ros": "sau data ROS de la jumătatea lui noiembrie", "file": "Depui Form 11 pentru anul {p}", "balance": "Plătești soldul pentru anul {p}", "prelim": "Plătești impozitul preliminar pentru anul {n}"}, "chart": {"title": "Amortizarea de 40% pentru taxi, an cu an", "caption": "Taxi de €40,000, folosit 100% în afaceri. Mașină obișnuită: 12.5% din plafonul de cost de €24,000 (benzile cu cele mai mici emisii).", "year": "Anul {n}", "ref": "Mașină obișnuită: {ordinary} pe an", "total": "După 8 ani: {taxi} deduși pentru taxi, {ordinary_total} pentru o mașină obișnuită."}, "deadlineDaysOne": "{days} rămasă", "calc": {"toc": "Calculator de taxe", "title": "Calculează-ți taxele", "intro": "Scrie cifrele tale. Rămân doar pe acest dispozitiv.", "example": "Acestea sunt cifrele din exemplul ghidului. Înlocuiește-le cu ale tale.", "year": "Anul fiscal", "period": "Sume", "perYear": "Pe an", "perWeek": "Pe săptămână", "aYear": "pe an", "takings": "Încasări", "takingsHint": "Fiecare cursă și bacșiș, înainte de comisionul aplicației", "expenses": "Cheltuieli de afaceri", "allowances": "Amortizare fiscală", "allowancesExample": "Încă e cifra din exemplul ghidului. Scrie-o pe a ta sau 0 dacă nu ai.", "allowancesCar": "Calculeaz-o din taxiul tău", "allowancesAmount": "Scrie suma direct", "carPrice": "Prețul plătit, după orice grant", "carBought": "Anul în care l-ai cumpărat", "carUse": "Folosire în afacere, %", "carResult": "40% din ce a rămas din preț: {amount}", "weeks": "Săptămâni lucrate pe an", "about": "Despre tine", "aboutSummary": "{household} · vârsta {age}", "aboutPension": "pensie {amount}", "household": "Gospodăria", "single": "Persoană singură", "singleParent": "Părinte singur", "married": "Căsătoriți sau parteneri civili", "partnerPay": "Salariul anual al partenerului", "partnerHint": "0 dacă nu are venit", "partnerAge": "Vârsta partenerului la 31 decembrie", "age": "Vârsta ta la 31 decembrie", "pension": "Contribuții la pensie anul acesta", "pensionLimit": "Limita de deducere la vârsta ta: {amount}", "pensionOver": "{amount} depășește limita: fără deducere anul acesta, dar se reportează.", "pensionTip": "Dacă mai plătești {extra} la pensie, impozitul pe venit scade cu {saving}.", "credits": "Alte credite fiscale", "creditsHint": "Chirie, sănătate și altele", "profit": "Profit impozabil", "incomeTax": "Impozit pe venit", "usc": "USC", "prsi": "PRSI", "total": "Total taxe", "share": "Pune deoparte {pct} din încasările fiecărei săptămâni.", "weekly": "Cam {amount} pe săptămână.", "keep": "Îți rămân {amount}", "taxPart": "Taxele sunt {pct} din profit", "noProfit": "Fără profit, nu ai taxe de plătit.", "deadline": "La termen", "prelimPaid": "Impozit preliminar deja plătit pentru {year}", "balance": "Diferența pentru {year}", "nextPrelim": "Impozitul preliminar pentru {year}", "nextPrelimHint": "100% din taxele de anul acesta, varianta sigură", "due": "De plătit {when}", "dueRos": "până la {date}, pe ROS", "dueOct": "până la {date} sau la data ulterioară ROS", "overpaid": "Ai plătit în plus {amount} pentru {year}.", "reset": "Ia-o de la capăt", "invalid": "Scrie o sumă, de exemplu 62000", "invalidWeeks": "Scrie un număr de săptămâni între 1 și 53", "invalidAge": "Scrie o vârstă între 16 și 100", "invalidUse": "Scrie un procent între 0 și 100", "invalidYear": "Scrie un an, de exemplu 2024", "assumptions": "O estimare după ratele Revenue pentru {year}. Presupune că taxiul e singurul tău venit (fără salariu propriu, fără chirii, fără pierderi reportate) și că de la 66 de ani primești pensia de stat: dacă o amâni, PRSI se poate plăti până la 70 de ani. Nu include ratele USC pentru cardul medical, PRSI din anul în care împlinești 66 de ani și limitele de scutire mai mari pentru cei peste 65 de ani cu copii în întreținere.", "marriedNote": "Pentru cupluri, aceasta este suma cu care profitul din taxi crește impozitul pe venit al amândurora. Presupune că fluturașul de salariu al partenerului folosește deja toate creditele voastre comune și tranșa de 20%; dacă folosește mai puțin, o parte se reține din salariu, iar suma de plată la termen e mai mică. Creditul pentru îngrijitor la domiciliu (home carer) nu e inclus: îl poți avea fie pe el, fie tranșa comună mai mare de 20%, nu pe amândouă.", "announce": "Total taxe {total}. Pune deoparte {pct} din încasări.", "yearNotes": {"2027": "PRSI pentru 2027 include creșterea planificată la 4.5% de la 1 octombrie 2027."}}}}</script>
+<script type="application/json" id="tax-years">{"2025":{"bands":{"single":44000,"singleParent":48000,"married":53000,"marriedIncreaseMax":35000},"credits":{"personalSingle":2000,"personalMarried":4000,"earnedIncomeMax":2000,"employeeMax":2000,"singleParent":1900,"ageSingle":245,"ageMarried":490},"rates":{"standard":0.2,"higher":0.4},"age65":{"exemptSingle":18000,"exemptMarried":36000,"marginalRate":0.4},"usc":{"exemptUpTo":13000,"bands":[[12012,0.005],[27382,0.02],[70044,0.03],[100000,0.08],[null,0.11]],"reduced":{"fromAge":70,"incomeUpTo":60000,"bands":[[12012,0.005],[null,0.02]]}},"prsi":{"rate":0.04125,"minimum":650,"from":5000,"untilAge":66},"pension":{"earningsCap":115000,"limits":[[30,0.15],[40,0.2],[50,0.25],[55,0.3],[60,0.35],[null,0.4]]},"taxiAllowanceRate":0.4,"deadline":{"date":"2026-11-18","ros":true}},"2026":{"bands":{"single":44000,"singleParent":48000,"married":53000,"marriedIncreaseMax":35000},"credits":{"personalSingle":2000,"personalMarried":4000,"earnedIncomeMax":2000,"employeeMax":2000,"singleParent":1900,"ageSingle":245,"ageMarried":490},"rates":{"standard":0.2,"higher":0.4},"age65":{"exemptSingle":18000,"exemptMarried":36000,"marginalRate":0.4},"usc":{"exemptUpTo":13000,"bands":[[12012,0.005],[28700,0.02],[70044,0.03],[100000,0.08],[null,0.11]],"reduced":{"fromAge":70,"incomeUpTo":60000,"bands":[[12012,0.005],[null,0.02]]}},"prsi":{"rate":0.042375,"minimum":650,"from":5000,"untilAge":66},"pension":{"earningsCap":115000,"limits":[[30,0.15],[40,0.2],[50,0.25],[55,0.3],[60,0.35],[null,0.4]]},"taxiAllowanceRate":0.4,"deadline":{"date":"2027-10-31","ros":false}},"2027":{"bands":{"single":46500,"singleParent":50500,"married":55500,"marriedIncreaseMax":37500},"credits":{"personalSingle":2125,"personalMarried":4250,"earnedIncomeMax":2125,"employeeMax":2125,"singleParent":1900,"ageSingle":245,"ageMarried":490},"rates":{"standard":0.2,"higher":0.4},"age65":{"exemptSingle":18000,"exemptMarried":36000,"marginalRate":0.4},"usc":{"exemptUpTo":13000,"bands":[[12012,0.005],[30300,0.02],[70044,0.03],[100000,0.08],[null,0.11]],"reduced":{"fromAge":70,"incomeUpTo":60000,"bands":[[12012,0.005],[null,0.02]]}},"prsi":{"rate":0.043875,"minimum":650,"from":5000,"untilAge":66},"pension":{"earningsCap":115000,"limits":[[30,0.15],[40,0.2],[50,0.25],[55,0.3],[60,0.35],[null,0.4]]},"taxiAllowanceRate":0.4,"deadline":{"date":"2028-10-31","ros":false}}}</script>
+<script>/* Taxi tax engine: rules R1–R14 of docs/superpowers/plans/2026-11-11-tax-calculator.md. Pure, no DOM.
+   `Y` is one year from src/tax_years.json; every amount is yearly euros. */
+(() => {
+  "use strict";
+
+  const cents = (x) => Math.sign(x) * Math.round(Math.abs(x) * 100 + 1e-7) / 100;
+  const num = (v) => (Number.isFinite(+v) ? +v : 0);
+
+  function pensionPct(Y, age) {
+    for (const [below, pct] of Y.pension.limits) if (below === null || below > age) return pct;
+    throw new Error("pension limits must end with a null age");
+  }
+
+  // R4: income tax on income x with a standard-rate band and credits.
+  function it(Y, x, band, credits) {
+    const gross = Y.rates.standard * Math.min(x, band) + Y.rates.higher * Math.max(0, x - band);
+    return Math.max(0, gross - credits);
+  }
+
+  // R7: exemption limit and marginal relief from 65.
+  function over65(Y, tax, x, married, age) {
+    if (age < 65) return tax;
+    const limit = married ? Y.age65.exemptMarried : Y.age65.exemptSingle;
+    if (x <= limit) return 0;
+    if (x < 2 * limit) return Math.min(tax, Y.age65.marginalRate * (x - limit));
+    return tax;
+  }
+
+  // R5, R6, R8. For couples: what the taxi profit adds to the joint bill.
+  function incomeTax(Y, taxable, profit, household, partner, age, other) {
+    const c = Y.credits;
+    const b = Y.bands;
+    const eic = Math.min(c.earnedIncomeMax, 0.2 * profit);
+    if (household === "married") {
+      const emp = Math.min(c.employeeMax, 0.2 * partner);
+      const ageCredit = age >= 65 ? c.ageMarried : 0;
+      const increase = Math.min(b.marriedIncreaseMax, Math.min(taxable, partner));
+      const jointX = taxable + partner;
+      // The earned income credit cannot be transferred to a spouse: at most the tax the taxi income adds.
+      const adds = it(Y, jointX, b.married + increase, 0) - it(Y, partner, b.married, 0);
+      const eicUsed = Math.min(eic, Math.max(0, adds));
+      const joint = it(Y, jointX, b.married + increase, c.personalMarried + eicUsed + emp + ageCredit + other);
+      const alone = it(Y, partner, b.married, c.personalMarried + emp + ageCredit + other);
+      return over65(Y, joint, jointX, true, age) - over65(Y, alone, partner, true, age);
+    }
+    const ageCredit = age >= 65 ? c.ageSingle : 0;
+    if (household === "singleParent") {
+      const credits = c.personalSingle + c.singleParent + eic + ageCredit + other;
+      return over65(Y, it(Y, taxable, b.singleParent, credits), taxable, false, age);
+    }
+    return over65(Y, it(Y, taxable, b.single, c.personalSingle + eic + ageCredit + other), taxable, false, age);
+  }
+
+  // R9: on profit; pension does not reduce it.
+  function usc(Y, profit, age) {
+    const u = Y.usc;
+    if (profit <= u.exemptUpTo) return 0;
+    const bands = age >= u.reduced.fromAge && profit <= u.reduced.incomeUpTo ? u.reduced.bands : u.bands;
+    let total = 0;
+    let floor = 0;
+    for (const [top, rate] of bands) {
+      const ceiling = top === null ? profit : Math.min(profit, top);
+      if (ceiling > floor) total += (ceiling - floor) * rate;
+      if (top === null || profit <= top) break;
+      floor = top;
+    }
+    return total;
+  }
+
+  // R10
+  function prsi(Y, profit, age) {
+    const p = Y.prsi;
+    if (age >= p.untilAge || profit < p.from) return 0;
+    return Math.max(p.minimum, p.rate * profit);
+  }
+
+  function charges(Y, input, pension) {
+    const household = input.household;
+    const partner = household === "married" ? num(input.partnerPay) : 0;
+    const age = Math.trunc(num(input.age));
+    // R6/R7: a couple's age relief follows the older spouse; USC, PRSI and the pension percentage the driver.
+    const taxAge = household === "married" ? Math.max(age, Math.trunc(num(input.partnerAge))) : age;
+    const raw = num(input.takings) - num(input.expenses) - num(input.allowances);
+    const profit = cents(Math.max(0, raw)); // R1
+    const limit = pensionPct(Y, age) * Math.min(profit, Y.pension.earningsCap); // R2
+    const relief = Math.min(pension, limit);
+    const taxable = profit - relief; // R3
+    return {
+      raw, profit, limit, relief, taxable, partner,
+      band: household === "married" ? Y.bands.married : Y.bands[household],
+      incomeTax: cents(incomeTax(Y, taxable, profit, household, partner, taxAge, num(input.credits))),
+      usc: cents(usc(Y, profit, age)),
+      prsi: cents(prsi(Y, profit, age)),
+    };
+  }
+
+  function compute(Y, input) {
+    const pension = Math.max(0, num(input.pension));
+    const ch = charges(Y, input, pension);
+    const total = cents(ch.incomeTax + ch.usc + ch.prsi); // R11
+    const takings = num(input.takings);
+
+    let tip = null; // R13
+    if (input.household !== "married" || ch.partner === 0) {
+      const room = ch.limit - ch.relief;
+      const above = ch.taxable - ch.band;
+      if (room > 0 && above > 0) {
+        const extra = Math.round(Math.min(room, above));
+        const saving = cents(ch.incomeTax - charges(Y, input, pension + extra).incomeTax);
+        if (saving >= 1) tip = { extra, saving };
+      }
+    }
+
+    const balance = cents(total - num(input.prelimPaid)); // R14
+    const nextPrelim = Math.max(0, total);
+    return {
+      profit: ch.profit,
+      loss: ch.raw < -0.004,
+      pensionLimit: cents(ch.limit),
+      pensionRelief: cents(ch.relief),
+      pensionOver: cents(Math.max(0, pension - ch.limit)),
+      taxable: cents(ch.taxable),
+      incomeTax: ch.incomeTax,
+      usc: ch.usc,
+      prsi: ch.prsi,
+      total,
+      keep: cents(ch.profit - total),
+      share: takings > 0 ? total / takings : 0,
+      tip,
+      balance,
+      nextPrelim,
+      due: cents(Math.max(0, balance) + nextPrelim),
+      overpaid: Math.max(0, -balance),
+    };
+  }
+
+  // R12: 40% of what is left of the price (it drops by the full 40% a year whatever the private use), times business use.
+  function carAllowance(Y, taxYear, price, bought, use) {
+    if (bought > taxYear || !(price > 0)) return 0;
+    const rate = Y.taxiAllowanceRate;
+    return cents(rate * price * (1 - rate) ** (taxYear - bought) * num(use) / 100);
+  }
+
+  /* Reads what drivers type in either language: "62,000", "62.000", "€ 62 000", "1.234,50", "62,5".
+     Both separators: the last is the decimal point. One kind, repeated: thousands. One separator once: thousands
+     when exactly 3 digits follow (and it is not "0,500"), otherwise a decimal point. Thousands groups must be
+     3 digits. Returns 0 for blank, null for anything else unreadable. */
+  function parseAmount(text) {
+    const s = String(text ?? "").replace(/\s/g, "").replace(/€/g, "").replace(/eur/gi, "");
+    if (s === "") return 0;
+    if (!/^[\d.,]+$/.test(s)) return null;
+    const grouped = (part, sep) => new RegExp(`^\\d{1,3}(\\${sep}\\d{3})+$`).test(part);
+    const dots = s.split(".").length - 1;
+    const commas = s.split(",").length - 1;
+    let value;
+    if (dots && commas) {
+      const dec = s.lastIndexOf(".") > s.lastIndexOf(",") ? "." : ",";
+      const thou = dec === "." ? "," : ".";
+      if ((dec === "." ? dots : commas) !== 1) return null;
+      const [whole, frac] = s.split(dec);
+      if (!grouped(whole, thou) || !/^\d{1,2}$/.test(frac)) return null; // money has at most two decimals
+      value = Number(`${whole.split(thou).join("")}.${frac}`);
+    } else if (dots + commas > 1) {
+      const sep = dots ? "." : ",";
+      if (!grouped(s, sep)) return null;
+      value = Number(s.split(sep).join(""));
+    } else if (dots + commas === 1) {
+      const sep = dots ? "." : ",";
+      const [whole, frac] = s.split(sep);
+      if (frac === "") value = Number(whole || "0");
+      else if (frac.length === 3 && /^[1-9]\d{0,2}$/.test(whole)) value = Number(whole + frac);
+      else if (frac.length > 2) return null; // digits typed into a figure ("62,00050000"), not a sum of money
+      else value = Number(`${whole || "0"}.${frac}`);
+    } else {
+      value = Number(s);
+    }
+    // Whole cents only. Beyond MAX_SAFE_INTEGER cents they are no longer exact, and huge inputs overflow to Infinity.
+    const amount = cents(value);
+    return amount <= Number.MAX_SAFE_INTEGER / 100 ? amount : null;
+  }
+
+  // Whole euros in the Irish format, used in both languages: "€6,428", "−€18,000"; `euro: false` gives "1,292".
+  const grouping = new Intl.NumberFormat("en-IE", { maximumFractionDigits: 0 });
+  function format(n, { sign = false, euro = true } = {}) {
+    const whole = Math.round(Math.abs(num(n)));
+    const minus = whole !== 0 && (sign || n < 0) ? "−" : "";
+    return `${minus}${euro ? "€" : ""}${grouping.format(whole)}`;
+  }
+
+  window.TaxCalc = { compute, carAllowance, parseAmount, format };
+})();
+</script>
 <script>
 /* Irish Tax for Taxi Drivers: language switch, contents, scroll-spy, checklists, deadline, ledger, install hint.
    Runs synchronously at the end of <body>, so a Romanian first visit never flashes English. */
@@ -4013,6 +4733,8 @@ section[data-sid="ten-things"] ol > li::before {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Dotted keys reach nested strings: "calc.title".
+  const pick = (s, key) => key.split(".").reduce((node, k) => (node == null ? node : node[k]), s);
 
   // Storage can be missing or throw (Private Browsing, blocked site data); the page must work without it.
   const store = {
@@ -4073,18 +4795,19 @@ section[data-sid="ten-things"] ol > li::before {
     doc.lang = l;
     doc.dataset.lang = l;
     document.title = s.docTitle;
-    $$("[data-i18n]").forEach((el) => { el.textContent = s[el.dataset.i18n]; });
-    $$("[data-i18n-aria]").forEach((el) => el.setAttribute("aria-label", s[el.dataset.i18nAria]));
+    $$("[data-i18n]").forEach((el) => { el.textContent = pick(s, el.dataset.i18n); });
+    $$("[data-i18n-aria]").forEach((el) => el.setAttribute("aria-label", pick(s, el.dataset.i18nAria)));
     $$('.lang [role="radio"]').forEach((radio) => {
       const on = radio.dataset.lang === l;
       radio.setAttribute("aria-checked", String(on));
       radio.tabIndex = on ? 0 : -1;
     });
+    document.dispatchEvent(new CustomEvent("ttg:lang", { detail: { lang: l } })); // the calculator re-renders its sentences
   }
 
   function sectionAt(line) {
     let found = null;
-    for (const sec of $$('[data-region="article"] > section')) {
+    for (const sec of $$("main section[data-sid]")) { // the calculator, then the guide's sections
       if (sec.getBoundingClientRect().top <= line) found = sec;
       else break;
     }
@@ -4426,7 +5149,365 @@ section[data-sid="ten-things"] ol > li::before {
     if (target) requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
   }
 
-  window.ttg = { setLanguage, daysLabel, currentSectionId, renderDeadline };
+  window.ttg = { setLanguage, daysLabel, currentSectionId, renderDeadline, store, lang: () => lang };
+})();
+
+</script>
+<script>
+/* Tax calculator: state, typing, rendering and memory. The sums come from window.TaxCalc (src/tax.js); words come
+   from the strings JSON, in whichever language app.js has applied. Money is held yearly whatever the period shown. */
+(() => {
+  "use strict";
+  const root = document.getElementById("calculator");
+  if (!root || !window.TaxCalc || !window.ttg) return;
+
+  const { compute, carAllowance, parseAmount, format } = window.TaxCalc;
+  const STRINGS = JSON.parse(document.getElementById("strings").textContent);
+  const RATES = JSON.parse(document.getElementById("tax-years").textContent);
+  const YEARS = Object.keys(RATES).sort();
+  const KEY = "ttg.calc";
+  const PER_PERIOD = ["takings", "expenses"]; // typed per week in weekly mode
+  const WHOLE = ["weeks", "age", "partnerAge", "carBought"];
+  const CHOICES = { year: YEARS, period: ["year", "week"], household: ["single", "singleParent", "married"],
+                    allowanceMode: ["amount", "car"] };
+  const ANNOUNCE_AFTER = 1000; // ms of quiet before the screen-reader summary updates
+
+  const $ = (sel) => root.querySelector(sel);
+  const $$ = (sel) => [...root.querySelectorAll(sel)];
+  const { store } = window.ttg;
+  const lang = () => window.ttg.lang();
+  const words = () => STRINGS[lang()].calc;
+  const fill = (tpl, values) => tpl.replace(/\{(\w+)\}/g, (_, k) => values[k]);
+  const pct = (x) => `${(Math.round(Math.max(0, x) * 1000) / 10).toFixed(1)}%`;
+  const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // y(x) of a CSS cubic-bezier(x1, y1, x2, y2). x(s) only rises when 0 ≤ x1, x2 ≤ 1, so bisection finds s.
+  function bezier(x1, y1, x2, y2) {
+    const at = (a, b, s) => 3 * a * s * (1 - s) ** 2 + 3 * b * s * s * (1 - s) + s ** 3;
+    return (x) => {
+      let lo = 0;
+      let hi = 1;
+      for (let i = 0; i < 24; i++) {
+        const s = (lo + hi) / 2;
+        if (at(x1, x2, s) < x) lo = s; else hi = s;
+      }
+      return at(y1, y2, (lo + hi) / 2);
+    };
+  }
+
+  // The motion tokens from the stylesheet, read once: --d2 and the --ease-out curve.
+  let motion = null;
+  function motionTokens() {
+    if (!motion) {
+      const css = getComputedStyle(document.documentElement);
+      const curve = css.getPropertyValue("--ease-out").match(/cubic-bezier\(([^)]*)\)/)[1].split(",").map(Number);
+      motion = { ms: parseFloat(css.getPropertyValue("--d2")), ease: bezier(...curve) };
+    }
+    return motion;
+  }
+
+  function defaults() {
+    const now = String(new Date().getFullYear());
+    const year = YEARS.includes(now) ? now : YEARS[YEARS.length - 1];
+    return {
+      year, period: "year", takings: 62000, expenses: 18000, allowances: 4000, allowanceMode: "amount",
+      carPrice: 0, carBought: Number(year), carUse: 100, weeks: 48, household: "single", partnerPay: 0,
+      partnerAge: 45, age: 45, pension: 0, credits: 0, prelimPaid: 0, touched: false, allowanceSet: false,
+    };
+  }
+
+  // A saved state is used field by field; anything of the wrong kind or out of range falls back to the default.
+  function load() {
+    const base = defaults();
+    let saved = null;
+    try { saved = JSON.parse(store.get(KEY) || "null"); } catch { saved = null; }
+    if (!saved || saved.v !== 1) return base;
+    for (const [k, v] of Object.entries(base)) {
+      const s = saved[k];
+      if (CHOICES[k]) { if (CHOICES[k].includes(s)) base[k] = s; }
+      else if (typeof v === "boolean") { if (typeof s === "boolean") base[k] = s; }
+      else if (Number.isFinite(s) && s >= 0 && (k in range() ? inRange(k, s) : true)) base[k] = s;
+    }
+    return base;
+  }
+
+  function range() {
+    return { weeks: [1, 53, "invalidWeeks"], age: [16, 100, "invalidAge"], partnerAge: [16, 100, "invalidAge"],
+             carUse: [0, 100, "invalidUse"],
+             carBought: [1990, Number(state ? state.year : YEARS[YEARS.length - 1]), "invalidYear"] };
+  }
+  const inRange = (field, v) => {
+    const [lo, hi] = range()[field];
+    return v >= lo && v <= hi && (!WHOLE.includes(field) || Number.isInteger(v));
+  };
+
+  let state = null;
+  state = load();
+  let result = null;
+  const errors = {}; // field → strings key of the message on screen
+  let announceTimer = 0;
+
+  const save = () => store.set(KEY, JSON.stringify({ v: 1, ...state }));
+  const forget = () => { try { localStorage.removeItem(KEY); } catch { /* storage blocked: nothing was kept */ } };
+
+  const allowancesNow = () => (state.allowanceMode === "car"
+    ? carAllowance(RATES[state.year], Number(state.year), state.carPrice, state.carBought, state.carUse)
+    : state.allowances);
+
+  function recompute() {
+    result = compute(RATES[state.year], {
+      takings: state.takings, expenses: state.expenses, allowances: allowancesNow(), pension: state.pension,
+      age: state.age, household: state.household, partnerPay: state.household === "married" ? state.partnerPay : 0,
+      partnerAge: state.household === "married" ? state.partnerAge : 0,
+      credits: state.credits, prelimPaid: state.prelimPaid,
+    });
+  }
+
+  // What a field shows: whole euros grouped ("62,000"), a weekly figure in weekly mode, plain numbers for the rest.
+  function shown(field) {
+    if (field === "allowances") return format(allowancesNow(), { euro: false });
+    if (WHOLE.includes(field) || field === "carUse") return String(state[field]);
+    const v = state.period === "week" && PER_PERIOD.includes(field) ? state[field] / state.weeks : state[field];
+    return format(v, { euro: false });
+  }
+
+  // Parse one field; returns a number, or the strings key of the error to show.
+  function read(field, text) {
+    const v = parseAmount(text);
+    if (field in range()) return v !== null && inRange(field, v) ? v : { error: range()[field][2] };
+    return v === null ? { error: "invalid" } : v;
+  }
+
+  function showError(field, key) {
+    const input = root.querySelector(`#calc-${field}`);
+    const note = $(`[data-error-for="${field}"]`);
+    if (key) {
+      errors[field] = key;
+      input.setAttribute("aria-invalid", "true");
+      note.textContent = words()[key];
+      note.hidden = false;
+    } else {
+      delete errors[field];
+      input.removeAttribute("aria-invalid");
+      note.textContent = "";
+      note.hidden = true;
+    }
+  }
+
+  function setFold(id, open) {
+    const fold = root.querySelector(`#calc-${id}`);
+    fold.inert = !open;
+    fold.classList.toggle("is-open", open);
+    const button = $(`.calc-more[aria-controls="calc-${id}"]`);
+    if (button) button.setAttribute("aria-expanded", String(open));
+  }
+
+  function out(key, text) {
+    const el = $(`[data-out="${key}"]`);
+    if (el.textContent !== text) el.textContent = text;
+  }
+
+  // Money figures count from what is on screen to the new value. A new value mid-count starts from where the count is.
+  const onScreen = {}; // data-out key → the value its figure shows now
+  const counts = new Map(); // data-out key → { from, to, start }
+  let frame = 0;
+
+  function figure(key, value) {
+    const running = counts.get(key);
+    if (running && running.to === value) return;
+    const from = key in onScreen ? onScreen[key] : value;
+    if (from === value || reduceMotion() || document.hidden) {
+      counts.delete(key);
+      onScreen[key] = value;
+      out(key, format(value));
+      return;
+    }
+    counts.set(key, { from, to: value, start: null });
+    if (!frame) frame = requestAnimationFrame(step);
+  }
+
+  function step(now) {
+    const { ms, ease } = motionTokens();
+    for (const [key, c] of counts) {
+      if (c.start === null) c.start = now;
+      const t = Math.min(1, (now - c.start) / ms);
+      onScreen[key] = t === 1 ? c.to : c.from + (c.to - c.from) * ease(t);
+      out(key, format(onScreen[key]));
+      if (t === 1) counts.delete(key);
+    }
+    frame = counts.size ? requestAnimationFrame(step) : 0;
+  }
+
+  function dueWhen(t) {
+    const d = RATES[state.year].deadline;
+    const date = new Intl.DateTimeFormat(lang() === "ro" ? "ro-RO" : "en-IE",
+      { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${d.date}T00:00:00Z`));
+    return fill(d.ros ? t.dueRos : t.dueOct, { date });
+  }
+
+  function render() {
+    const t = words();
+    const r = result;
+    const year = Number(state.year);
+    const car = state.allowanceMode === "car";
+
+    for (const el of $$(".calc-input")) {
+      const field = el.dataset.field;
+      if (el !== document.activeElement && !errors[field]) el.value = shown(field);
+    }
+    for (const field of ["year", "period", "household"]) {
+      $$(`input[name="calc-${field}"]`).forEach((radio) => { radio.checked = radio.value === state[field]; });
+    }
+    $('[data-row="weeks"]').hidden = state.period !== "week";
+    $('[data-row="partnerPay"]').hidden = state.household !== "married";
+    $('[data-row="partnerAge"]').hidden = state.household !== "married";
+    $("#calc-allowances").readOnly = car;
+    const sw = $(".calc-switch");
+    sw.dataset.action = car ? "amount" : "car";
+    sw.dataset.i18n = car ? "calc.allowancesAmount" : "calc.allowancesCar";
+    sw.textContent = car ? t.allowancesAmount : t.allowancesCar;
+    sw.setAttribute("aria-expanded", String(car));
+    setFold("car", car);
+    $(".calc-example").hidden = state.touched;
+    // The guide's €4,000 allowance is easy to keep by mistake: say so under it until it has been set.
+    out("allowancesAdvice", state.touched && !state.allowanceSet ? t.allowancesExample : "");
+    $$(".calc-per").forEach((el) => { el.hidden = state.period !== "week"; });
+
+    figure("profit", r.profit);
+    figure("incomeTax", r.incomeTax);
+    figure("usc", r.usc);
+    figure("prsi", r.prsi);
+    figure("total", r.total);
+    out("share", r.profit > 0 ? fill(t.share, { pct: pct(r.share) }) : t.noProfit);
+    out("weekly", state.period === "week" && r.total > 0 ? fill(t.weekly, { amount: format(r.total / state.weeks) }) : "");
+    const part = r.profit > 0 ? Math.min(1, Math.max(0, r.total / r.profit)) : 0;
+    $(".calc-bar-fill").style.setProperty("--part", String(part));
+    out("taxPart", r.profit > 0 ? fill(t.taxPart, { pct: pct(part) }) : "");
+    out("keep", fill(t.keep, { amount: format(r.keep) }));
+
+    out("pensionLimit", fill(t.pensionLimit, { amount: format(r.pensionLimit) }));
+    out("pensionNote", r.pensionOver > 0 ? fill(t.pensionOver, { amount: format(r.pensionOver) }) : "");
+    out("pensionTip", r.tip ? fill(t.pensionTip, { extra: format(r.tip.extra), saving: format(r.tip.saving) }) : "");
+    out("carResult", car ? fill(t.carResult, { amount: format(allowancesNow()) }) : "");
+
+    $$("[data-tpl]").forEach((el) => {
+      const key = el.dataset.tpl.split(".")[1];
+      el.textContent = fill(t[key], { year: key === "nextPrelim" ? year + 1 : year });
+    });
+    figure("balance", r.balance);
+    figure("nextPrelim", r.nextPrelim);
+    figure("due", r.due);
+    const when = dueWhen(t);
+    out("dueLabel", fill(t.due, { when }));
+
+    const household = t[state.household];
+    const pension = state.pension > 0 ? ` · ${fill(t.aboutPension, { amount: format(state.pension) })}` : "";
+    $('[aria-controls="calc-about"] .calc-more-summary').textContent =
+      fill(t.aboutSummary, { household, age: state.age }) + pension;
+    $('[aria-controls="calc-deadline"] .calc-more-summary').textContent = r.overpaid > 0
+      ? fill(t.overpaid, { amount: format(r.overpaid), year })
+      : `${format(r.due)} ${when}`;
+
+    out("assumptions", fill(t.assumptions, { year }));
+    out("marriedNote", state.household === "married" ? t.marriedNote : "");
+    out("yearNote", (t.yearNotes && t.yearNotes[state.year]) || "");
+    for (const [field, key] of Object.entries(errors)) $(`[data-error-for="${field}"]`).textContent = t[key];
+
+    clearTimeout(announceTimer);
+    announceTimer = setTimeout(() => {
+      out("announce", fill(words().announce, { total: format(result.total), pct: pct(result.share) }));
+    }, ANNOUNCE_AFTER);
+  }
+
+  function update() {
+    recompute();
+    render();
+  }
+
+  root.addEventListener("input", (e) => {
+    const el = e.target.closest(".calc-input");
+    if (!el || el.readOnly) return;
+    const field = el.dataset.field;
+    const v = read(field, el.value);
+    if (typeof v !== "number") { showError(field, v.error); return; }
+    showError(field, null);
+    if (field === "weeks") {
+      if (state.period === "week") for (const f of PER_PERIOD) state[f] = (state[f] / state.weeks) * v; // keep the weekly figures
+      state.weeks = v;
+    } else if (state.period === "week" && PER_PERIOD.includes(field)) {
+      state[field] = v * state.weeks;
+    } else {
+      state[field] = v;
+    }
+    if (field === "allowances") state.allowanceSet = true;
+    state.touched = true;
+    update();
+    save();
+  });
+
+  root.addEventListener("change", (e) => {
+    const radio = e.target.closest('input[type="radio"][name^="calc-"]');
+    if (!radio) return;
+    state[radio.name.slice(5)] = radio.value;
+    state.touched = true;
+    update();
+    save();
+  });
+
+  root.addEventListener("focusin", (e) => {
+    const el = e.target.closest(".calc-input");
+    if (!el || el.readOnly) return;
+    // Select the figure for typing over, unless typing has already begun: selecting then would swallow the keystroke.
+    const before = el.value;
+    requestAnimationFrame(() => {
+      if (document.activeElement !== el || el.value !== before) return;
+      el.select();
+      el.setSelectionRange(0, el.value.length); // iOS Safari does not always honour select() on focus
+    });
+  });
+
+  // Leaving a field shows what the sums actually use: the formatted value, or the last good one after a typo.
+  root.addEventListener("focusout", (e) => {
+    const el = e.target.closest(".calc-input");
+    if (!el) return;
+    if (errors[el.dataset.field]) showError(el.dataset.field, null);
+    el.value = shown(el.dataset.field);
+  });
+
+  root.addEventListener("click", (e) => {
+    const more = e.target.closest(".calc-more");
+    if (more) {
+      setFold(more.getAttribute("aria-controls").slice(5), more.getAttribute("aria-expanded") !== "true");
+      return;
+    }
+    if (e.target.closest(".calc-switch")) {
+      if (state.allowanceMode === "car") state.allowances = allowancesNow(); // the worked-out figure becomes the typed one
+      state.allowanceMode = state.allowanceMode === "car" ? "amount" : "car";
+      state.allowanceSet = true;
+      state.touched = true;
+      update();
+      save();
+      if (state.allowanceMode === "car") $("#calc-carPrice").focus();
+      return;
+    }
+    if (e.target.closest(".calc-reset")) {
+      state = defaults();
+      for (const field of Object.keys(errors)) showError(field, null);
+      forget();
+      update();
+      $("#calc-takings").focus();
+    }
+  });
+
+  // <output> is a polite live region by default; a counting figure would be read out frame by frame. The debounced
+  // summary (data-out="announce") speaks instead.
+  for (const o of $$("output")) o.setAttribute("aria-live", "off");
+
+  root.querySelector(".calc-form").addEventListener("submit", (e) => e.preventDefault());
+  document.addEventListener("ttg:lang", render);
+
+  update();
+  window.ttg.calc = { state: () => ({ ...state }), result: () => result };
 })();
 
 </script>

@@ -1,5 +1,5 @@
 /* Offline support for the installed guide. build.py fills in the version and the precache list. */
-const CACHE = "ttg-dd0f21346003";
+const CACHE = "ttg-f6ec6077dad5";
 const PRECACHE = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "icon-maskable-512.png"];
 
 self.addEventListener("install", (event) => {
